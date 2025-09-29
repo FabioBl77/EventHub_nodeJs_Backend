@@ -1,0 +1,18 @@
+{
+  "server": {
+    "host": "localhost",
+    "port": 3000
+  },
+  "logging": {
+    "level": "info",
+    "file": "logs/eventhub.log"
+  },
+  "chat": {
+    "maxMessageLength": 500,
+    "historyLimit": 100
+  },
+  "events": {
+    "defaultCapacity": 50,
+    "maxCapacity": 500
+  }
+}
