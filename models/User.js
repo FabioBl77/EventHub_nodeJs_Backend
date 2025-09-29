@@ -36,6 +36,14 @@ User.init(
       type: DataTypes.ENUM('user', 'admin'),
       defaultValue: 'user'
     },
+    resetToken: {
+      type: DataTypes.STRING,  // corretto da Sequelize.STRING a DataTypes.STRING
+      allowNull: true
+    },
+    resetTokenExpires: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
     isBlocked: {
       type: DataTypes.BOOLEAN,
       defaultValue: false

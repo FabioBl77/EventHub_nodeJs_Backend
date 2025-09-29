@@ -2,6 +2,9 @@ const User = require('./User');
 const Event = require('./Event');
 const Message = require('./Message');
 const Registration = require('./Registration');
+const Sequelize = require('sequelize');
+const sequelize = require('./index'); // importa l’istanza
+
 
 // Relazioni
 User.hasMany(Event, { foreignKey: 'createdBy', as: 'events' });
