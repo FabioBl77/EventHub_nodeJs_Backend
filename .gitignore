@@ -17,3 +17,7 @@ build/
 .idea/
 *.suo
 *.user
+
+config/db.js
+.env
+node_modules/
