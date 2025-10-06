@@ -226,4 +226,34 @@ router.delete('/:eventId/cancel', authMiddleware, eventController.cancelRegistra
  */
 router.post('/:eventId/report', authMiddleware, eventController.reportEvent);
 
+/**
+ * @swagger
+ * /events/filter:
+ *   get:
+ *     summary: Filtra eventi per data, categoria e luogo
+ *     tags: [Events]
+ *     parameters:
+ *       - in: query
+ *         name: date
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Data dell'evento (es. 2025-10-10)
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *         description: Categoria evento (es. "musica", "sport")
+ *       - in: query
+ *         name: location
+ *         schema:
+ *           type: string
+ *         description: Luogo dell'evento
+ *     responses:
+ *       200:
+ *         description: Lista eventi filtrati
+ */
+router.get('/filter', eventController.filterEvents);
+
+
 module.exports = router;
