@@ -3,11 +3,14 @@ const Event = require('../models/Event');
 const User = require('../models/User');
 
 /**
- * Invia un messaggio in un evento
+ * 📌 Invia un messaggio in un evento (salva su DB + invia in real-time)
+ * Route: POST /events/:eventId/chat
+ * Body: { content: string }
  */
 const sendMessage = async (req, res) => {
   try {
-    const { eventId, content } = req.body;
+    const { content } = req.body;
+    const { eventId } = req.params;
 
     // Controllo che l'evento esista
     const event = await Event.findByPk(eventId);
@@ -15,11 +18,24 @@ const sendMessage = async (req, res) => {
       return res.status(404).json({ message: 'Evento non trovato' });
     }
 
-    // Creazione messaggio
+    // Creazione messaggio nel DB
     const message = await Chat.create({
       content,
       eventId,
       userId: req.user.userId
+    });
+
+    // Recupero username per la notifica live
+    const user = await User.findByPk(req.user.userId, { attributes: ['id', 'username'] });
+
+    // Emissione messaggio in tempo reale tramite Socket.IO
+    const io = req.app.get('io');
+    io.to(`event_${eventId}`).emit('new_message', {
+      id: message.id,
+      content: message.content,
+      userId: message.userId,
+      username: user?.username || `utente#${message.userId}`,
+      createdAt: message.createdAt
     });
 
     res.status(201).json({
@@ -33,7 +49,8 @@ const sendMessage = async (req, res) => {
 };
 
 /**
- * Recupera tutti i messaggi di un evento
+ * 📌 Recupera tutti i messaggi di un evento
+ * Route: GET /events/:eventId/chat
  */
 const getMessagesByEvent = async (req, res) => {
   try {
@@ -48,7 +65,9 @@ const getMessagesByEvent = async (req, res) => {
     // Recupero messaggi con info utente
     const messages = await Chat.findAll({
       where: { eventId },
-      include: [{ model: User, as: 'user', attributes: ['id', 'username'] }],
+      include: [
+        { model: User, as: 'user', attributes: ['id', 'username'] }
+      ],
       order: [['createdAt', 'ASC']]
     });
 

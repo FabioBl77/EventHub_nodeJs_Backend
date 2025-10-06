@@ -203,6 +203,43 @@ const personalDashboard = async (req, res) => {
   }
 };
 
+// 📌 Filtra eventi (per data, categoria, luogo)
+const { Op } = require('sequelize');
+
+const filterEvents = async (req, res) => {
+  try {
+    const { date, category, location } = req.query;
+
+    const filters = {};
+
+    // Filtra per giorno specifico (ignora l'ora)
+    if (date) {
+      const start = new Date(date);
+      start.setHours(0, 0, 0, 0);
+
+      const end = new Date(date);
+      end.setHours(23, 59, 59, 999);
+
+      filters.date = { [Op.between]: [start, end] };
+    }
+
+    if (category) filters.category = category;
+    if (location) filters.location = location;
+
+    const events = await Event.findAll({
+      where: filters,
+      include: [{ model: User, as: 'creator', attributes: ['id', 'username'] }]
+    });
+
+    res.status(200).json(events);
+  } catch (err) {
+    console.error('Errore filterEvents:', err);
+    res.status(500).json({ message: 'Errore nel filtraggio eventi' });
+  }
+};
+
+
+
 module.exports = {
   createEvent,
   getAllEvents,
@@ -212,5 +249,6 @@ module.exports = {
   registerToEvent,
   cancelRegistration,
   reportEvent,
-  personalDashboard
+  personalDashboard,
+  filterEvents
 };

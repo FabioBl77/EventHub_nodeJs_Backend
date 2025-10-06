@@ -12,12 +12,19 @@ const authMiddleware = require('../middlewares/authMiddleware');
 
 /**
  * @swagger
- * /chats:
+ * /chats/{eventId}:
  *   post:
  *     summary: Invia un messaggio in chat per un evento
  *     tags: [Chat]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - name: eventId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID dell'evento
  *     requestBody:
  *       required: true
  *       content:
@@ -25,24 +32,22 @@ const authMiddleware = require('../middlewares/authMiddleware');
  *           schema:
  *             type: object
  *             properties:
- *               eventId:
- *                 type: integer
- *                 description: ID dell'evento
  *               content:
  *                 type: string
  *                 description: Messaggio da inviare
  *             required:
- *               - eventId
  *               - content
  *     responses:
  *       201:
  *         description: Messaggio inviato
- *       401:
- *         description: Token mancante o non valido
  *       400:
  *         description: Errore input
+ *       401:
+ *         description: Token mancante o non valido
+ *       404:
+ *         description: Evento non trovato
  */
-router.post('/', authMiddleware, chatController.sendMessage);
+router.post('/:eventId', authMiddleware, chatController.sendMessage);
 
 /**
  * @swagger

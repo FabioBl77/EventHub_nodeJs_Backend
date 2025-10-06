@@ -73,4 +73,61 @@ router.post('/login', authController.login);
  */
 router.post('/logout', authController.logout);
 
+/**
+ * @swagger
+ * /auth/forgot-password:
+ *   post:
+ *     summary: Richiesta reset password
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *             required:
+ *               - email
+ *     responses:
+ *       200:
+ *         description: Email inviata se l’utente esiste
+ */
+router.post('/forgot-password', authController.forgotPassword);
+
+/**
+ * @swagger
+ * /auth/reset-password/{token}:
+ *   post:
+ *     summary: Reset password usando token
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: path
+ *         name: token
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Token ricevuto via email
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 description: Nuova password
+ *                 example: NuovaPassword123!
+ *     responses:
+ *       200:
+ *         description: Password aggiornata con successo
+ *       400:
+ *         description: Token non valido o scaduto
+ *       500:
+ *         description: Errore interno
+ */
+router.post('/reset-password/:token', authController.resetPassword);
+
 module.exports = router;
