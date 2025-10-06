@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
+const passport = require('../config/passport');
 
 /**
  * @swagger
@@ -30,9 +31,9 @@ const authController = require('../controllers/authController');
  *                 type: string
  *     responses:
  *       201:
- *         description: Utente creato con successo
+ *         description: Utente creato con successo, email di conferma inviata
  *       400:
- *         description: Errore input
+ *         description: Email già registrata o input non valido
  */
 router.post('/register', authController.register);
 
@@ -56,8 +57,12 @@ router.post('/register', authController.register);
  *     responses:
  *       200:
  *         description: Login effettuato con successo
- *       401:
- *         description: Credenziali non valide
+ *       400:
+ *         description: Password errata
+ *       403:
+ *         description: Email non confermata
+ *       404:
+ *         description: Utente non trovato
  */
 router.post('/login', authController.login);
 
@@ -129,5 +134,55 @@ router.post('/forgot-password', authController.forgotPassword);
  *         description: Errore interno
  */
 router.post('/reset-password/:token', authController.resetPassword);
+
+/**
+ * 🔹 Nuove rotte OAuth Google
+ */
+
+/**
+ * @swagger
+ * /auth/google:
+ *   get:
+ *     summary: Login rapido con Google
+ *     tags: [Auth]
+ *     responses:
+ *       302:
+ *         description: Reindirizzamento a Google per login
+ */
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+/**
+ * @swagger
+ * /auth/google/callback:
+ *   get:
+ *     summary: Callback Google OAuth
+ *     tags: [Auth]
+ *     responses:
+ *       302:
+ *         description: Reindirizzamento al frontend con token JWT
+ */
+// authRoutes.js – callback Google OAuth aggiornata
+router.get(
+  '/google/callback',
+  passport.authenticate('google', { session: false, failureRedirect: `${process.env.FRONTEND_URL}/login?error=oauth` }),
+  (req, res) => {
+    try {
+      if (!req.user) {
+        // Caso raro: Passport non ha autenticato
+        return res.redirect(`${process.env.FRONTEND_URL}/login?error=no_user`);
+      }
+
+      const { generateToken } = require('../config/jwt');
+      const token = generateToken({ userId: req.user.id, role: req.user.role });
+
+      // Reindirizzamento al frontend con token
+      res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}`);
+    } catch (err) {
+      console.error('Errore callback OAuth Google:', err);
+      res.redirect(`${process.env.FRONTEND_URL}/login?error=server`);
+    }
+  }
+);
+
 
 module.exports = router;

@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const http = require('http');
+const session = require('express-session');
+const passport = require('passport');
 
 // Config DB
 const db = require('./config/db');
@@ -22,9 +24,23 @@ const notificationRoutes = require('./routes/notificationRoutes');
 // Socket.io
 const { initSocket } = require('./utils/socket');
 
+// Passport: strategia Google
+require('./config/passport');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Express session (necessario per Passport)
+app.use(session({
+  secret: 'session_secret_eventhub',
+  resave: false,
+  saveUninitialized: true
+}));
+
+// Inizializzazione Passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Rotte API
 app.use('/api/auth', authRoutes);
