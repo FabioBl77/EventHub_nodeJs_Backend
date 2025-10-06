@@ -39,6 +39,27 @@ router.post('/register', authController.register);
 
 /**
  * @swagger
+ * /auth/confirm-email/{token}:
+ *   get:
+ *     summary: Conferma registrazione tramite email
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: path
+ *         name: token
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Token ricevuto via email per conferma registrazione
+ *     responses:
+ *       200:
+ *         description: Email confermata con successo
+ *       400:
+ *         description: Token non valido o scaduto
+ */
+router.get('/confirm-email/:token', authController.confirmEmail);
+
+/**
+ * @swagger
  * /auth/login:
  *   post:
  *     summary: Login utente
@@ -161,21 +182,16 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
  *       302:
  *         description: Reindirizzamento al frontend con token JWT
  */
-// authRoutes.js – callback Google OAuth aggiornata
 router.get(
   '/google/callback',
   passport.authenticate('google', { session: false, failureRedirect: `${process.env.FRONTEND_URL}/login?error=oauth` }),
   (req, res) => {
     try {
-      if (!req.user) {
-        // Caso raro: Passport non ha autenticato
-        return res.redirect(`${process.env.FRONTEND_URL}/login?error=no_user`);
-      }
+      if (!req.user) return res.redirect(`${process.env.FRONTEND_URL}/login?error=no_user`);
 
       const { generateToken } = require('../config/jwt');
       const token = generateToken({ userId: req.user.id, role: req.user.role });
 
-      // Reindirizzamento al frontend con token
       res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}`);
     } catch (err) {
       console.error('Errore callback OAuth Google:', err);
@@ -183,6 +199,5 @@ router.get(
     }
   }
 );
-
 
 module.exports = router;
