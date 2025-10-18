@@ -16,6 +16,7 @@ const passport = require('../config/passport');
  *   post:
  *     summary: Registrazione utente
  *     tags: [Auth]
+ *     description: Registra un utente e invia una email di conferma con token.
  *     requestBody:
  *       required: true
  *       content:
@@ -31,7 +32,7 @@ const passport = require('../config/passport');
  *                 type: string
  *     responses:
  *       201:
- *         description: Utente creato con successo, email di conferma inviata
+ *         description: Utente creato e email di conferma inviata
  *       400:
  *         description: Email già registrata o input non valido
  */
@@ -43,6 +44,7 @@ router.post('/register', authController.register);
  *   get:
  *     summary: Conferma registrazione tramite email
  *     tags: [Auth]
+ *     description: Conferma la registrazione cliccando sul link ricevuto via email. Aggiorna isVerified a true e rimuove il token.
  *     parameters:
  *       - in: path
  *         name: token
@@ -155,10 +157,6 @@ router.post('/forgot-password', authController.forgotPassword);
  *         description: Errore interno
  */
 router.post('/reset-password/:token', authController.resetPassword);
-
-/**
- * 🔹 Nuove rotte OAuth Google
- */
 
 /**
  * @swagger

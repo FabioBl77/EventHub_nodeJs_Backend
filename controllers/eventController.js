@@ -7,7 +7,7 @@ const notificationController = require('./notificationController');
 // 📌 Crea un nuovo evento
 const createEvent = async (req, res) => {
   try {
-    const { title, description, date, location, capacity, image } = req.body;
+    const { title, description, date, location, capacity, category, image } = req.body;
 
     const event = await Event.create({
       title,
@@ -16,6 +16,7 @@ const createEvent = async (req, res) => {
       location,
       capacity,
       image,
+      category,
       createdBy: req.user.userId
     });
 
@@ -59,7 +60,7 @@ const getEventById = async (req, res) => {
 const updateEvent = async (req, res) => {
   try {
     const { eventId } = req.params;
-    const { title, description, date, location, capacity, image } = req.body;
+    const { title, description, date, location, capacity, category, image } = req.body;
 
     const event = await Event.findByPk(eventId);
     if (!event) return res.status(404).json({ message: 'Evento non trovato' });
@@ -68,7 +69,7 @@ const updateEvent = async (req, res) => {
       return res.status(403).json({ message: 'Non autorizzato' });
     }
 
-    await event.update({ title, description, date, location, capacity, image });
+    await event.update({ title, description, date, location, capacity, category, image });
     res.status(200).json(event);
   } catch (err) {
     console.error('Errore updateEvent:', err);
