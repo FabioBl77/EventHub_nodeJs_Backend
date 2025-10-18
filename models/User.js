@@ -36,8 +36,20 @@ User.init(
       type: DataTypes.ENUM('user', 'admin'),
       defaultValue: 'user'
     },
+    isVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false // nuovo campo: verifica email
+    },
+    verificationToken: {
+      type: DataTypes.STRING,
+      allowNull: true // token per conferma email
+    },
+    verificationTokenExpires: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
     resetToken: {
-      type: DataTypes.STRING,  // corretto da Sequelize.STRING a DataTypes.STRING
+      type: DataTypes.STRING,
       allowNull: true
     },
     resetTokenExpires: {

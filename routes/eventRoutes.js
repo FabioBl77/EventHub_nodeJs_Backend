@@ -51,6 +51,8 @@ router.get('/dashboard', authMiddleware, eventController.personalDashboard);
  *                 type: string
  *               capacity:
  *                 type: integer
+ *               category:
+ *                 type: string
  *               image:
  *                 type: string
  *             required:
@@ -98,6 +100,8 @@ router.post('/', authMiddleware, eventController.createEvent);
  *                 type: string
  *               capacity:
  *                 type: integer
+ *               category:
+ *                 type: string
  *               image:
  *                 type: string
  *     responses:

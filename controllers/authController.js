@@ -1,41 +1,54 @@
 const { Op } = require('sequelize');
-const User = require('../models/User'); // importa il modello User
+const User = require('../models/User');
 const { generateToken } = require('../config/jwt');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const { sendEmail } = require('../utils/email');
 
 /**
- * Registrazione utente
+ * Registrazione utente con email di verifica
  */
 const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    // Controllo se email già esistente
+    // Controllo se email già registrata
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) return res.status(400).json({ message: 'Email già registrata' });
 
-    // Creazione utente (password hashata da hook di Sequelize)
+    // 🔹 Generazione token di verifica PRIMA della creazione dell'utente
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationTokenExpires = Date.now() + 24 * 3600 * 1000; // 24h
+
+    // Creazione utente con token già incluso
     const newUser = await User.create({
       username,
       email,
       password,
-      role: 'user'
+      role: 'user',
+      isVerified: false,
+      verificationToken,
+      verificationTokenExpires
     });
 
-    // Genera token JWT
-    const token = generateToken({ userId: newUser.id, role: newUser.role });
+    // URL di conferma email
+    const verificationURL = `${process.env.FRONTEND_URL}/confirm-email/${verificationToken}`;
+
+    // Invio email di conferma
+    await sendEmail({
+      to: newUser.email,
+      subject: 'Conferma registrazione EventHub',
+      text: `Ciao ${newUser.username}, clicca qui per confermare la tua registrazione: ${verificationURL}`
+    });
 
     res.status(201).json({
-      message: 'Utente registrato con successo',
+      message: 'Registrazione completata. Controlla la tua email per confermare l’account',
       user: {
         id: newUser.id,
         username: newUser.username,
         email: newUser.email,
         role: newUser.role
-      },
-      token
+      }
     });
   } catch (err) {
     console.error('Errore registrazione:', err);
@@ -44,6 +57,44 @@ const register = async (req, res) => {
       return res.status(400).json({ message: messages.join(', ') });
     }
     res.status(500).json({ message: 'Errore durante la registrazione' });
+  }
+};
+
+/**
+ * Conferma email tramite token e invio email di benvenuto
+ */
+const confirmEmail = async (req, res) => {
+  try {
+    const { token } = req.params;
+
+    // Trova utente con token valido e non scaduto
+    const user = await User.findOne({
+      where: {
+        verificationToken: token,
+        verificationTokenExpires: { [Op.gt]: Date.now() }
+      }
+    });
+
+    if (!user) return res.status(400).json({ message: 'Token non valido o scaduto' });
+
+    // Aggiorna stato utente
+    user.isVerified = true;
+    user.verificationToken = null;
+    user.verificationTokenExpires = null;
+    await user.save();
+
+    // 🔹 Invia email di benvenuto dopo conferma registrazione
+    await sendEmail({
+      to: user.email,
+      subject: 'Benvenuto su EventHub!',
+      text: `Ciao ${user.username}, il tuo account è stato confermato con successo! Ora puoi accedere e iniziare a utilizzare EventHub.`
+    });
+
+    res.status(200).json({ message: 'Email confermata con successo. Email di benvenuto inviata.' });
+
+  } catch (err) {
+    console.error('Errore conferma email:', err);
+    res.status(500).json({ message: 'Errore durante la conferma email' });
   }
 };
 
@@ -57,7 +108,8 @@ const login = async (req, res) => {
     const user = await User.findOne({ where: { email } });
     if (!user) return res.status(404).json({ message: 'Utente non trovato' });
 
-    // Confronta password
+    if (!user.isVerified) return res.status(403).json({ message: 'Devi confermare la tua email prima di accedere' });
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: 'Password errata' });
 
@@ -80,45 +132,30 @@ const login = async (req, res) => {
 };
 
 /**
+ * Logout utente (JWT lato client)
+ */
+const logout = async (req, res) => {
+  res.status(200).json({ message: 'Logout effettuato' });
+};
+
+/**
  * Recupero password
  */
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
+    if (!email) return res.status(400).json({ message: 'Email mancante nella richiesta' });
 
-    // DEBUG: mostra l'email ricevuta dalla richiesta
-    console.log('Email richiesta reset:', email);
-
-    if (!email) {
-      return res.status(400).json({ message: 'Email mancante nella richiesta' });
-    }
-
-    // Trova l'utente nel DB
     const user = await User.findOne({ where: { email } });
+    if (!user) return res.status(200).json({ message: 'Se l’email esiste, riceverai un link per resettare la password' });
 
-    // DEBUG: mostra se l'utente è stato trovato
-    console.log('Utente trovato:', user ? user.email : 'Nessuno');
-
-    if (!user) {
-      // Risposta generica per non rivelare se l'email esiste
-      return res.status(200).json({ message: 'Se l’email esiste, riceverai un link per resettare la password' });
-    }
-
-    // Genera token temporaneo
     const resetToken = crypto.randomBytes(32).toString('hex');
-    const resetTokenExpires = Date.now() + 3600000; // 1 ora
-
+    const resetTokenExpires = Date.now() + 3600000; // 1h
     await user.update({ resetToken, resetTokenExpires });
 
-    // Link reset (frontend gestirà la pagina di reset)
     const resetURL = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-
-    // DEBUG: mostra il link di reset
-    console.log('Link reset generato:', resetURL);
-
-    // Invia email
     await sendEmail({
-      to: user.email,               // destinatario corretto
+      to: user.email,
       subject: 'Reset password EventHub',
       text: `Clicca qui per resettare la password: ${resetURL}`
     });
@@ -130,7 +167,6 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-
 /**
  * Reset password
  */
@@ -139,20 +175,24 @@ const resetPassword = async (req, res) => {
     const { token } = req.params;
     const { password } = req.body;
 
+    // Trova l'utente con il token valido
     const user = await User.findOne({
       where: {
         resetToken: token,
         resetTokenExpires: { [Op.gt]: Date.now() }
       }
     });
-
     if (!user) return res.status(400).json({ message: 'Token non valido o scaduto' });
 
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
-    user.resetToken = null;
-    user.resetTokenExpires = null;
-    await user.save();
+    // Genera hash della nuova password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Aggiorna la password e reset token
+    await user.update({
+      password: password,
+      resetToken: null,
+      resetTokenExpires: null
+    });
 
     res.status(200).json({ message: 'Password aggiornata con successo' });
   } catch (err) {
@@ -161,17 +201,27 @@ const resetPassword = async (req, res) => {
   }
 };
 
+
 /**
- * Logout utente (JWT lato client)
+ * Callback OAuth Google
  */
-const logout = async (req, res) => {
-  res.status(200).json({ message: 'Logout effettuato' });
+const oauthGoogleCallback = async (req, res) => {
+  try {
+    const user = req.user;
+    const token = generateToken({ userId: user.id, role: user.role });
+    res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}`);
+  } catch (err) {
+    console.error('Errore OAuth Google callback:', err);
+    res.status(500).json({ message: 'Errore durante il login con Google' });
+  }
 };
 
 module.exports = {
   register,
+  confirmEmail,
   login,
   logout,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  oauthGoogleCallback
 };
