@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
 const passport = require('../config/passport');
+const authMiddleware = require('../middlewares/authMiddleware');
+const User = require('../models/User');
 
 /**
  * @swagger
@@ -197,5 +199,8 @@ router.get(
     }
   }
 );
+
+// 🔹 Profilo utente loggato (richiede token JWT)
+router.get('/me', authMiddleware, authController.getMe);
 
 module.exports = router;
