@@ -1,0 +1,867 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "EventHub API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Registrazione utente",
+        "tags": [
+          "Auth"
+        ],
+        "description": "Registra un utente e invia una email di conferma con token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Utente creato e email di conferma inviata"
+          },
+          "400": {
+            "description": "Email già registrata o input non valido"
+          }
+        }
+      }
+    },
+    "/auth/confirm-email/{token}": {
+      "get": {
+        "summary": "Conferma registrazione tramite email",
+        "tags": [
+          "Auth"
+        ],
+        "description": "Conferma la registrazione cliccando sul link ricevuto via email. Aggiorna isVerified a true e rimuove il token.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Token ricevuto via email per conferma registrazione"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email confermata con successo"
+          },
+          "400": {
+            "description": "Token non valido o scaduto"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login utente",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login effettuato con successo"
+          },
+          "400": {
+            "description": "Password errata"
+          },
+          "403": {
+            "description": "Email non confermata"
+          },
+          "404": {
+            "description": "Utente non trovato"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "Logout utente",
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Logout effettuato"
+          }
+        }
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "summary": "Richiesta reset password",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email inviata se l’utente esiste"
+          }
+        }
+      }
+    },
+    "/auth/reset-password/{token}": {
+      "post": {
+        "summary": "Reset password usando token",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Token ricevuto via email"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string",
+                    "description": "Nuova password",
+                    "example": "NuovaPassword123!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password aggiornata con successo"
+          },
+          "400": {
+            "description": "Token non valido o scaduto"
+          },
+          "500": {
+            "description": "Errore interno"
+          }
+        }
+      }
+    },
+    "/auth/google": {
+      "get": {
+        "summary": "Login rapido con Google",
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "302": {
+            "description": "Reindirizzamento a Google per login"
+          }
+        }
+      }
+    },
+    "/auth/google/callback": {
+      "get": {
+        "summary": "Callback Google OAuth",
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "302": {
+            "description": "Reindirizzamento al frontend con token JWT"
+          }
+        }
+      }
+    },
+    "/chats/{eventId}": {
+      "post": {
+        "summary": "Invia un messaggio in chat per un evento",
+        "tags": [
+          "Chat"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID dell'evento"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "Messaggio da inviare"
+                  }
+                },
+                "required": [
+                  "content"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Messaggio inviato"
+          },
+          "400": {
+            "description": "Errore input"
+          },
+          "401": {
+            "description": "Token mancante o non valido"
+          },
+          "404": {
+            "description": "Evento non trovato"
+          }
+        }
+      },
+      "get": {
+        "summary": "Leggi tutti i messaggi della chat di un evento",
+        "tags": [
+          "Chat"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID dell'evento"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista messaggi"
+          },
+          "401": {
+            "description": "Token mancante o non valido"
+          },
+          "404": {
+            "description": "Evento non trovato"
+          }
+        }
+      }
+    },
+    "/events/dashboard": {
+      "get": {
+        "summary": "Dashboard personale (eventi creati e a cui si è iscritti)",
+        "tags": [
+          "Events"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dashboard personale"
+          }
+        }
+      }
+    },
+    "/events": {
+      "post": {
+        "summary": "Crea un nuovo evento",
+        "tags": [
+          "Events"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "capacity": {
+                    "type": "integer"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "image": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "title",
+                  "date",
+                  "location",
+                  "capacity"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Evento creato"
+          },
+          "401": {
+            "description": "Token mancante o non valido"
+          }
+        }
+      },
+      "get": {
+        "summary": "Lista eventi pubblici",
+        "tags": [
+          "Events"
+        ],
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista eventi"
+          }
+        }
+      }
+    },
+    "/events/{eventId}": {
+      "put": {
+        "summary": "Aggiorna un evento esistente",
+        "tags": [
+          "Events"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "capacity": {
+                    "type": "integer"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "image": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Evento aggiornato"
+          },
+          "403": {
+            "description": "Non autorizzato"
+          },
+          "404": {
+            "description": "Evento non trovato"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Cancella un evento",
+        "tags": [
+          "Events"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Evento cancellato"
+          },
+          "403": {
+            "description": "Non autorizzato"
+          },
+          "404": {
+            "description": "Evento non trovato"
+          }
+        }
+      }
+    },
+    "/events/{eventId}/register": {
+      "post": {
+        "summary": "Iscrizione a un evento",
+        "tags": [
+          "Events"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Iscrizione avvenuta"
+          },
+          "400": {
+            "description": "Utente già iscritto"
+          }
+        }
+      }
+    },
+    "/events/{eventId}/cancel": {
+      "delete": {
+        "summary": "Annulla iscrizione a un evento",
+        "tags": [
+          "Events"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Iscrizione annullata"
+          },
+          "404": {
+            "description": "Iscrizione non trovata"
+          }
+        }
+      }
+    },
+    "/events/{eventId}/report": {
+      "post": {
+        "summary": "Segnala un evento agli admin",
+        "tags": [
+          "Events"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Evento segnalato agli admin"
+          },
+          "404": {
+            "description": "Evento non trovato"
+          }
+        }
+      }
+    },
+    "/events/filter": {
+      "get": {
+        "summary": "Filtra eventi per data, categoria e luogo",
+        "tags": [
+          "Events"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "date",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Data dell'evento (es. 2025-10-10)"
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Categoria evento (es. \"musica\", \"sport\")"
+          },
+          {
+            "in": "query",
+            "name": "location",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Luogo dell'evento"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista eventi filtrati"
+          }
+        }
+      }
+    },
+    "/notifications": {
+      "get": {
+        "summary": "Recupera le notifiche dell'utente loggato",
+        "tags": [
+          "Notifications"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista notifiche",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notifications": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Notification"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token mancante o non valido"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Lista utenti (solo admin)",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista utenti"
+          },
+          "403": {
+            "description": "Accesso negato"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "summary": "Dettaglio utente",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Utente trovato"
+          },
+          "404": {
+            "description": "Utente non trovato"
+          }
+        }
+      }
+    },
+    "/users/role": {
+      "put": {
+        "summary": "Aggiorna ruolo utente (solo admin)",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "integer"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "user",
+                      "admin"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ruolo aggiornato"
+          },
+          "403": {
+            "description": "Accesso negato"
+          }
+        }
+      }
+    },
+    "/users/block": {
+      "put": {
+        "summary": "Blocca o sblocca un utente (solo admin)",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "integer"
+                  },
+                  "block": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Utente bloccato/sbloccato"
+          },
+          "403": {
+            "description": "Accesso negato"
+          }
+        }
+      }
+    }
+  },
+  "components": {},
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Operazioni di autenticazione"
+    },
+    {
+      "name": "Chat",
+      "description": "Operazioni chat per eventi"
+    },
+    {
+      "name": "Events",
+      "description": "Operazioni sugli eventi"
+    },
+    {
+      "name": "Notifications",
+      "description": "Operazioni relative alle notifiche"
+    },
+    {
+      "name": "Users",
+      "description": "Operazioni utenti"
+    }
+  ]
+}
