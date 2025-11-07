@@ -27,8 +27,13 @@ const { initSocket } = require('./utils/socket');
 // Passport: strategia Google
 require('./config/passport');
 
+// Configurazione CORS per il frontend Vite
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', // il frontend Vite
+  credentials: true,               // se usi cookie/sessione
+}));
+
 app.use(express.json());
 
 // Express session (necessario per Passport)
