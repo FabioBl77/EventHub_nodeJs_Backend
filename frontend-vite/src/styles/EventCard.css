@@ -1,0 +1,52 @@
+.event-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 1rem;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.event-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.event-info {
+  padding: 1rem;
+}
+
+.event-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.btn.register { background-color: #9dcae9; }
+.btn.register:hover { background-color: #7985b0; }
+
+.btn.cancel { background-color: #ffc107; color: #212529; }
+.btn.cancel:hover { background-color: #e0a800; }
+
+.btn.edit { background-color: #007bff; }
+.btn.edit:hover { background-color: #0069d9; }
+
+.btn.delete { background-color: #dc3545; }
+.btn.delete:hover { background-color: #b02a37; }
+
+.btn.details { background-color: #6c757d; }
+.btn.details:hover { background-color: #363a3c; }

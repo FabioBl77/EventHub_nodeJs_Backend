@@ -1,22 +1,58 @@
 import { useState } from "react";
-import "../styles/Login.css"; // Riutilizzi lo stile della login
+import api from "../api/api"; // l'istanza Axios creata in src/api/api.js
+import "../styles/Login.css"; // riutilizziamo lo stile esistente
 
 export default function Register() {
   const [form, setForm] = useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
+  const [message, setMessage] = useState(""); // messaggi di successo/errore
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Dati registrazione:", form);
-    // 👉 In seguito: chiamata API POST /api/auth/register
+
+    // semplice validazione lato client
+    if (form.password !== form.confirmPassword) {
+      setMessage("Le password non coincidono");
+      return;
+    }
+
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const res = await api.post("/auth/register", {
+        username: form.username,
+        email: form.email,
+        password: form.password,
+      });
+
+      setMessage(res.data.message); // "Registrazione completata. Controlla la tua email..."
+      setForm({
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+    } catch (err) {
+      console.error(err);
+      if (err.response && err.response.data?.message) {
+        setMessage(err.response.data.message);
+      } else {
+        setMessage("Errore durante la registrazione");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -25,13 +61,15 @@ export default function Register() {
         <h1>Crea il tuo account</h1>
         <p className="subtitle">Unisciti alla community di EventHub</p>
 
+        {message && <p className="message">{message}</p>}
+
         <form onSubmit={handleSubmit}>
           <label>Nome completo</label>
           <input
             type="text"
-            name="name"
+            name="username"
             placeholder="Es. Mario Rossi"
-            value={form.name}
+            value={form.username}
             onChange={handleChange}
             required
           />
@@ -66,16 +104,15 @@ export default function Register() {
             required
           />
 
-          <button type="submit" className="btn">Registrati</button>
+          <button type="submit" className="btn" disabled={loading}>
+            {loading ? "Registrazione in corso..." : "Registrati"}
+          </button>
         </form>
 
         <p className="signup-text">
-          Hai già un account? <a href="#">Accedi</a>
+          Hai già un account? <a href="/login">Accedi</a>
         </p>
-        
       </div>
-        
     </div>
-    
   );
 }

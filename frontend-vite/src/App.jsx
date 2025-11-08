@@ -1,27 +1,32 @@
 // src/App.jsx
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer"; // 👈 importato qui
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import ConfirmEmail from "./pages/ConfirmEmail";
+import UserDashboard from "./pages/UserDashboard";
 
-function App() {
+export default function App() {
   return (
-    <Router>
+    <>
       <Navbar />
-      <div className="p-4">
+      <main style={{ minHeight: "calc(100vh - 160px)" }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/confirm-email/:token" element={<ConfirmEmail />} />
+          <Route path="/dashboard" element={<UserDashboard />} />
+          
         </Routes>
-      </div>
-      <Footer /> {/* 👈 aggiunto qui */}
-    </Router>
+      </main>
+      <Footer />
+    </>
   );
 }
-
-export default App;

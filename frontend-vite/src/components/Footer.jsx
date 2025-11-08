@@ -1,20 +1,16 @@
-// src/components/Footer.jsx
+import React from "react";
+import "../styles/footer.css";
+
 export default function Footer() {
   return (
-    <footer
-      style={{
-        backgroundColor: "#f3f4f6",
-        padding: "15px",
-        textAlign: "center",
-        marginTop: "40px",
-        borderTop: "1px solid #ddd",
-        color: "#555",
-      }}
-    >
-      <p>
-        © {new Date().getFullYear()} <strong>EventHub</strong> — Tutti i diritti riservati.
-      </p>
-      <small>Progetto ITS Piemonte — Verifica Finale</small>
+    <footer className="footer">
+      <p>&copy; {new Date().getFullYear()} EventHub. Tutti i diritti riservati.</p>
+      <div className="footer-links">
+        <a href="/">Home</a>
+        <a href="/login">Login</a>
+        <a href="/register">Registrati</a>
+        <a href="/privacy">Privacy</a>
+      </div>
     </footer>
   );
 }
