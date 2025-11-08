@@ -1,10 +1,8 @@
-// models/Event.js
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
-const User = require('./User');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/db");
 
 const Event = sequelize.define(
-  'Event',
+  "Event",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -44,19 +42,18 @@ const Event = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: User,
-        key: 'id',
+        model: "Users", // 👈 il nome ESATTO della tabella nel DB
+        key: "id",
       },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
   },
   {
-    tableName: 'events',
+    tableName: "events",
     timestamps: true,
   }
 );
 
-// Relazioni
-Event.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
-User.hasMany(Event, { foreignKey: 'createdBy' });
-
+// 👇 Evita l'import diretto qui (verrà collegato centralmente)
 module.exports = Event;

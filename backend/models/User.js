@@ -38,11 +38,11 @@ User.init(
     },
     isVerified: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false // nuovo campo: verifica email
+      defaultValue: false
     },
     verificationToken: {
       type: DataTypes.STRING,
-      allowNull: true // token per conferma email
+      allowNull: true
     },
     verificationTokenExpires: {
       type: DataTypes.DATE,
@@ -64,12 +64,14 @@ User.init(
   {
     sequelize,
     modelName: 'User',
-    tableName: 'Users',
+    tableName: 'Users', // 👈 importante: corrisponde alla tabella esistente
     timestamps: true,
     hooks: {
       beforeCreate: async (user) => {
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(user.password, salt);
+        if (user.password) {
+          const salt = await bcrypt.genSalt(10);
+          user.password = await bcrypt.hash(user.password, salt);
+        }
       },
       beforeUpdate: async (user) => {
         if (user.changed('password')) {

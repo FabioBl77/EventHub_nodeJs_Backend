@@ -5,8 +5,8 @@ const http = require('http');
 const session = require('express-session');
 const passport = require('passport');
 
-// Config DB
-const db = require('./config/db');
+// 🔹 Import modelli e connessione Sequelize
+const { sequelize, User, Event, Registration } = require('./models');
 
 // Middleware
 const errorMiddleware = require('./middlewares/errorMiddleware');
@@ -27,55 +27,64 @@ const { initSocket } = require('./utils/socket');
 // Passport: strategia Google
 require('./config/passport');
 
-// Configurazione CORS per il frontend Vite
 const app = express();
-app.use(cors({
-  origin: 'http://localhost:5173', // il frontend Vite
-  credentials: true,               // se usi cookie/sessione
-}));
+
+// 🔹 CORS (frontend Vite)
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 
-// Express session (necessario per Passport)
-app.use(session({
-  secret: 'session_secret_eventhub',
-  resave: false,
-  saveUninitialized: true
-}));
+// 🔹 Sessione (necessaria per Passport)
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'session_secret_eventhub',
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
-// Inizializzazione Passport
+// 🔹 Inizializzazione Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Rotte API
+// 🔹 Rotte API
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/chats', chatRoutes);
 app.use('/api/notifications', notificationRoutes);
 
-// Swagger docs
+// 🔹 Swagger docs
 setupSwagger(app);
 
-// Middleware globale errori
+// 🔹 Middleware globale errori
 app.use(errorMiddleware);
 
-// Creazione server HTTP
+// 🔹 Creazione server HTTP + Socket.io
 const server = http.createServer(app);
-
-// Inizializzazione Socket.io
 const io = initSocket(server);
-app.set('io', io); // rende io accessibile nei controller con req.app.get('io')
+app.set('io', io);
 
-// Connessione al database e avvio server
-db.sync()
+// ✅ Import esplicito dei modelli per garantire inizializzazione completa
+User.sync();
+Event.sync();
+Registration.sync();
+
+// 🔹 Connessione DB e avvio server
+sequelize
+  .sync({ alter: true }) // aggiorna le tabelle senza distruggere dati
   .then(() => {
-    console.log('Database connesso correttamente');
+    console.log('✅ Database connesso e sincronizzato correttamente');
     const PORT = process.env.PORT || 3000;
     server.listen(PORT, () => {
-      console.log(`Server avviato su http://localhost:${PORT}`);
+      console.log(`🚀 Server avviato su http://localhost:${PORT}`);
     });
   })
-  .catch(err => {
-    console.error('Errore connessione al database:', err);
+  .catch((err) => {
+    console.error('❌ Errore connessione al database:', err);
   });

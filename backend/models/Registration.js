@@ -10,33 +10,30 @@ Registration.init(
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'Users', key: 'id' }, // rimane Users
+      references: { model: 'Users', key: 'id' },
       onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
+      onUpdate: 'CASCADE',
     },
     eventId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'events', key: 'id' }, // <- corretto: 'events' minuscolo
+      references: { model: 'events', key: 'id' },
       onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
-    }
+      onUpdate: 'CASCADE',
+    },
   },
   {
     sequelize,
     modelName: 'Registration',
     tableName: 'Registrations',
-    timestamps: true
+    timestamps: true,
   }
 );
 
-// Associazioni
-Registration.belongsTo(User, { foreignKey: 'userId', as: 'user' });
-Registration.belongsTo(Event, { foreignKey: 'eventId', as: 'event' });
 
 module.exports = Registration;
