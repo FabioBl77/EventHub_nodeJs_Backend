@@ -1,0 +1,33 @@
+.footer {
+  background-color: #1e40af; /* blu scuro */
+  color: white;
+  padding: 1rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.footer-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive: mobile */
+@media (max-width: 768px) {
+  .footer-links {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}

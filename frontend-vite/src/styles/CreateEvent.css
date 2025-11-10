@@ -1,0 +1,116 @@
+/* CARD EVENTO COMPATTA E RESPONSIVE */
+.event-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  border-color: #3b82f6;
+}
+
+/* Immagine evento */
+.event-image {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+
+/* Info testo */
+.event-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 1rem;
+  gap: 0.4rem;
+}
+
+.event-info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e3a8a;
+}
+
+.event-info p {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* Bottoni */
+.action-btn {
+  width: 100%;
+  margin-top: 0.6rem;
+  padding: 0.5rem 0.8rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+/* Blu = Iscriviti */
+.btn-join {
+  background-color: #2563eb;
+  color: #fff;
+}
+
+.btn-join:hover {
+  background-color: #1e40af;
+}
+
+/* Grigio = Annulla iscrizione */
+.btn-cancel {
+  background-color: #4b5563;
+  color: #fff;
+}
+
+.btn-cancel:hover {
+  background-color: #374151;
+}
+
+/* Bottone Dettagli */
+.details-btn {
+  margin-top: 0.6rem;
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  transition: background 0.3s ease;
+}
+
+.details-btn:hover {
+  background-color: #1e40af;
+}
+
+/* Layout responsive a griglia */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  justify-items: center;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .event-card {
+    width: 100%;
+  }
+}

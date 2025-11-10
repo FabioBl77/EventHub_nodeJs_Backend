@@ -191,18 +191,37 @@ const personalDashboard = async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    const createdEvents = await Event.findAll({ where: { createdBy: userId } });
-    const registrations = await Registration.findAll({ where: { userId } });
+    // ✅ Eventi creati da me
+    const createdEvents = await Event.findAll({
+      where: { createdBy: userId },
+      include: [{ model: User, as: "creator", attributes: ["id", "username"] }],
+    });
+
+    // ✅ Eventi a cui sono iscritto
+    const registrations = await Registration.findAll({
+      where: { userId },
+      include: [
+        {
+          model: Event,
+          as: "event",
+          include: [{ model: User, as: "creator", attributes: ["id", "username"] }],
+        },
+      ],
+    });
+
+    const joinedEvents = registrations.map((r) => r.event);
 
     res.status(200).json({
       createdEvents,
-      registrations
+      joinedEvents,
     });
   } catch (err) {
-    console.error('Errore personalDashboard:', err);
-    res.status(500).json({ message: 'Errore nel recupero dashboard personale' });
+    console.error("Errore personalDashboard:", err);
+    res.status(500).json({ message: "Errore nel recupero dashboard personale" });
   }
 };
+
+
 
 // 📌 Filtra eventi (per data, categoria, luogo)
 const { Op } = require('sequelize');

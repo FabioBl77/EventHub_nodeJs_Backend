@@ -216,6 +216,23 @@ const oauthGoogleCallback = async (req, res) => {
   }
 };
 
+/**
+ * Restituisce i dati dell’utente loggato
+ */
+const getMe = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.userId, {
+      attributes: ['id', 'username', 'email', 'role']
+    });
+    if (!user) return res.status(404).json({ message: 'Utente non trovato' });
+    res.json(user);
+  } catch (err) {
+    console.error('Errore getMe:', err);
+    res.status(500).json({ message: 'Errore nel recupero utente' });
+  }
+};
+
+
 module.exports = {
   register,
   confirmEmail,
@@ -223,5 +240,6 @@ module.exports = {
   logout,
   forgotPassword,
   resetPassword,
-  oauthGoogleCallback
+  oauthGoogleCallback,
+  getMe
 };
