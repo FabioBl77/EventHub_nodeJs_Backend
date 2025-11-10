@@ -9,20 +9,23 @@ export default function UserDashboard() {
   const [registeredEvents, setRegisteredEvents] = useState([]);
   const [filters, setFilters] = useState({ date: "", category: "", location: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  // 📌 Carica eventi
+  // 📌 Carica tutti gli eventi e la dashboard personale
   const fetchEvents = async () => {
     try {
       setError("");
+      setLoading(true);
 
-      // 1️⃣ Tutti gli eventi pubblici
-      const publicRes = await api.get("/events");
+      // Chiamate ai tuoi endpoint backend
+      const [publicRes, dashboardRes] = await Promise.all([
+        api.get("/events"),
+        api.get("/events/dashboard"),
+      ]);
+
       setPublicEvents(publicRes.data || []);
-
-      // 2️⃣ Dashboard personale (eventi creati + iscrizioni)
-      const personalRes = await api.get("/events/dashboard");
-      setCreatedEvents(personalRes.data.createdEvents || []);
-      setRegisteredEvents(personalRes.data.joinedEvents || []);
+      setCreatedEvents(dashboardRes.data.createdEvents || []);
+      setRegisteredEvents(dashboardRes.data.joinedEvents || []);
     } catch (err) {
       console.error("❌ Errore nel caricamento della dashboard:", err);
       if (err.response?.status === 401) {
@@ -30,6 +33,8 @@ export default function UserDashboard() {
       } else {
         setError("Errore nel caricamento degli eventi.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,19 +47,29 @@ export default function UserDashboard() {
     setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 
-  const filteredEvents = publicEvents.filter((event) => {
-    const matchesDate =
-      !filters.date ||
-      new Date(event.date).toDateString() === new Date(filters.date).toDateString();
-    const matchesCategory =
-      !filters.category ||
-      event.category?.toLowerCase().includes(filters.category.toLowerCase());
-    const matchesLocation =
-      !filters.location ||
-      event.location?.toLowerCase().includes(filters.location.toLowerCase());
+  // 🔎 Funzione di filtraggio frontend
+  const applyFilters = (events) => {
+    return events.filter((event) => {
+      const matchesDate =
+        !filters.date ||
+        new Date(event.date).toDateString() === new Date(filters.date).toDateString();
 
-    return matchesDate && matchesCategory && matchesLocation;
-  });
+      const matchesCategory =
+        !filters.category ||
+        event.category?.toLowerCase().includes(filters.category.toLowerCase());
+
+      const matchesLocation =
+        !filters.location ||
+        event.location?.toLowerCase().includes(filters.location.toLowerCase());
+
+      return matchesDate && matchesCategory && matchesLocation;
+    });
+  };
+
+  // 🔎 Applica filtri a tutte le sezioni
+  const filteredPublicEvents = applyFilters(publicEvents);
+  const filteredCreatedEvents = applyFilters(createdEvents);
+  const filteredRegisteredEvents = applyFilters(registeredEvents);
 
   return (
     <div className="dashboard-page">
@@ -86,47 +101,58 @@ export default function UserDashboard() {
         />
       </div>
 
-      {/* 🔹 Eventi pubblici */}
-      <section>
-        <h2>Eventi disponibili</h2>
-        <div className="events-grid">
-          {filteredEvents.length > 0 ? (
-            filteredEvents.map((event) => (
-              <EventCard key={event.id} event={event} onAction={fetchEvents} />
-            ))
-          ) : (
-            <p>Nessun evento disponibile.</p>
-          )}
-        </div>
-      </section>
+      {loading ? (
+        <p>Caricamento eventi...</p>
+      ) : (
+        <>
+          {/* 🔹 Eventi pubblici */}
+          <section>
+            <h2>Eventi disponibili</h2>
+            <div className="events-grid">
+              {filteredPublicEvents.length > 0 ? (
+                filteredPublicEvents.map((event) => (
+                  <EventCard key={event.id} event={event} onAction={fetchEvents} />
+                ))
+              ) : (
+                <p>Nessun evento disponibile.</p>
+              )}
+            </div>
+          </section>
 
-      {/* 🔹 Eventi creati da te */}
-      <section>
-        <h2>I miei eventi creati</h2>
-        <div className="events-grid">
-          {createdEvents.length > 0 ? (
-            createdEvents.map((event) => (
-              <EventCard key={event.id} event={event} onAction={fetchEvents} />
-            ))
-          ) : (
-            <p>Non hai ancora creato eventi.</p>
-          )}
-        </div>
-      </section>
+          {/* 🔹 Eventi creati da te */}
+          <section>
+            <h2>I miei eventi creati</h2>
+            <div className="events-grid">
+              {filteredCreatedEvents.length > 0 ? (
+                filteredCreatedEvents.map((event) => (
+                  <EventCard key={event.id} event={event} onAction={fetchEvents} />
+                ))
+              ) : (
+                <p>Non hai ancora creato eventi.</p>
+              )}
+            </div>
+          </section>
 
-      {/* 🔹 Eventi a cui sei iscritto */}
-      <section>
-        <h2>Eventi a cui sei iscritto</h2>
-        <div className="events-grid">
-          {registeredEvents.length > 0 ? (
-            registeredEvents.map((event) => (
-              <EventCard key={event.id} event={event} onAction={fetchEvents} />
-            ))
-          ) : (
-            <p>Non sei ancora iscritto ad alcun evento.</p>
-          )}
-        </div>
-      </section>
+          {/* 🔹 Eventi a cui sei iscritto */}
+          <section>
+            <h2>Eventi a cui sei iscritto</h2>
+            <div className="events-grid">
+              {filteredRegisteredEvents.length > 0 ? (
+                filteredRegisteredEvents.map((event) => (
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    onAction={fetchEvents}
+                    isRegisteredSection={true} // 👈 cambia bottone in "Annulla iscrizione"
+                  />
+                ))
+              ) : (
+                <p>Non sei ancora iscritto ad alcun evento.</p>
+              )}
+            </div>
+          </section>
+        </>
+      )}
 
       {/* 🔹 Pulsante Crea Evento */}
       <button
