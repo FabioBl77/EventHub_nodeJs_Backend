@@ -1,4 +1,3 @@
-// src/pages/UserDashboard.jsx
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
@@ -16,6 +15,33 @@ export default function UserDashboard() {
   const [filters, setFilters] = useState({ date: "", category: "", location: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+
+  // 🔽 Stati visibilità sezioni (inizializzati da localStorage)
+  const [showAvailable, setShowAvailable] = useState(() => {
+    const saved = localStorage.getItem("showAvailable");
+    return saved === null ? true : JSON.parse(saved);
+  });
+  const [showCreated, setShowCreated] = useState(() => {
+    const saved = localStorage.getItem("showCreated");
+    return saved === null ? true : JSON.parse(saved);
+  });
+  const [showRegistered, setShowRegistered] = useState(() => {
+    const saved = localStorage.getItem("showRegistered");
+    return saved === null ? true : JSON.parse(saved);
+  });
+
+  // 📌 Salva automaticamente quando cambia una sezione
+  useEffect(() => {
+    localStorage.setItem("showAvailable", JSON.stringify(showAvailable));
+  }, [showAvailable]);
+
+  useEffect(() => {
+    localStorage.setItem("showCreated", JSON.stringify(showCreated));
+  }, [showCreated]);
+
+  useEffect(() => {
+    localStorage.setItem("showRegistered", JSON.stringify(showRegistered));
+  }, [showRegistered]);
 
   // 📌 Carica tutti gli eventi e la dashboard personale
   const fetchEvents = async () => {
@@ -55,39 +81,35 @@ export default function UserDashboard() {
   };
 
   // 🔎 Filtraggio frontend
-  const applyFilters = (events) => {
-    return events.filter((event) => {
+  const applyFilters = (events) =>
+    events.filter((event) => {
       const matchesDate =
         !filters.date ||
         (event.date &&
           new Date(event.date).toDateString() ===
             new Date(filters.date).toDateString());
-
       const matchesCategory =
         !filters.category ||
         (event.category || "")
           .toLowerCase()
           .includes(filters.category.toLowerCase());
-
       const matchesLocation =
         !filters.location ||
         (event.location || "")
           .toLowerCase()
           .includes(filters.location.toLowerCase());
-
       return matchesDate && matchesCategory && matchesLocation;
     });
-  };
 
   const filteredPublicEvents = applyFilters(publicEvents);
   const filteredCreatedEvents = applyFilters(createdEvents);
   const filteredRegisteredEvents = applyFilters(registeredEvents);
 
-  // 🔹 Verifica se l'utente è iscritto a un evento
+  // 🔹 Verifica iscrizione
   const isEventRegistered = (eventId) =>
     registeredEvents.some((e) => e.id === eventId);
 
-  // 🔹 Aggiorna la UI dopo iscrizione / disiscrizione (senza refresh)
+  // 🔹 Aggiorna UI dopo iscrizione / disiscrizione
   const handleToggleRegistration = (eventId, nowRegistered) => {
     const allEvents = [...publicEvents, ...createdEvents, ...registeredEvents];
     const event = allEvents.find((e) => e.id === eventId);
@@ -153,60 +175,84 @@ export default function UserDashboard() {
       </div>
 
       {/* 🔹 Eventi disponibili */}
-      <section>
-        <h2>Eventi disponibili</h2>
-        <div className="events-grid">
-          {filteredPublicEvents.length > 0 ? (
-            filteredPublicEvents.map((event) => (
-              <EventCard
-                key={event.id}
-                event={event}
-                isRegistered={isEventRegistered(event.id)}
-                onToggleRegistration={handleToggleRegistration}
-              />
-            ))
-          ) : (
-            <p>Nessun evento disponibile.</p>
-          )}
+      <section className="dashboard-section">
+        <div
+          className="section-header"
+          onClick={() => setShowAvailable((p) => !p)}
+        >
+          <h2>Eventi disponibili</h2>
+          <span className="toggle-icon">{showAvailable ? "▲" : "▼"}</span>
         </div>
+        {showAvailable && (
+          <div className="events-grid fade-in">
+            {filteredPublicEvents.length > 0 ? (
+              filteredPublicEvents.map((event) => (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  isRegistered={isEventRegistered(event.id)}
+                  onToggleRegistration={handleToggleRegistration}
+                />
+              ))
+            ) : (
+              <p>Nessun evento disponibile.</p>
+            )}
+          </div>
+        )}
       </section>
 
       {/* 🔹 Eventi creati da te */}
-      <section>
-        <h2>I miei eventi creati</h2>
-        <div className="events-grid">
-          {filteredCreatedEvents.length > 0 ? (
-            filteredCreatedEvents.map((event) => (
-              <EventCard
-                key={event.id}
-                event={event}
-                isRegistered={isEventRegistered(event.id)}
-                onToggleRegistration={handleToggleRegistration}
-              />
-            ))
-          ) : (
-            <p>Non hai ancora creato eventi.</p>
-          )}
+      <section className="dashboard-section">
+        <div
+          className="section-header"
+          onClick={() => setShowCreated((p) => !p)}
+        >
+          <h2>I miei eventi creati</h2>
+          <span className="toggle-icon">{showCreated ? "▲" : "▼"}</span>
         </div>
+        {showCreated && (
+          <div className="events-grid fade-in">
+            {filteredCreatedEvents.length > 0 ? (
+              filteredCreatedEvents.map((event) => (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  isRegistered={isEventRegistered(event.id)}
+                  onToggleRegistration={handleToggleRegistration}
+                />
+              ))
+            ) : (
+              <p>Non hai ancora creato eventi.</p>
+            )}
+          </div>
+        )}
       </section>
 
       {/* 🔹 Eventi a cui sei iscritto */}
-      <section>
-        <h2>Eventi a cui sei iscritto</h2>
-        <div className="events-grid">
-          {filteredRegisteredEvents.length > 0 ? (
-            filteredRegisteredEvents.map((event) => (
-              <EventCard
-                key={event.id}
-                event={event}
-                isRegistered={true}
-                onToggleRegistration={handleToggleRegistration}
-              />
-            ))
-          ) : (
-            <p>Non sei ancora iscritto ad alcun evento.</p>
-          )}
+      <section className="dashboard-section">
+        <div
+          className="section-header"
+          onClick={() => setShowRegistered((p) => !p)}
+        >
+          <h2>Eventi a cui sei iscritto</h2>
+          <span className="toggle-icon">{showRegistered ? "▲" : "▼"}</span>
         </div>
+        {showRegistered && (
+          <div className="events-grid fade-in">
+            {filteredRegisteredEvents.length > 0 ? (
+              filteredRegisteredEvents.map((event) => (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  isRegistered={true}
+                  onToggleRegistration={handleToggleRegistration}
+                />
+              ))
+            ) : (
+              <p>Non sei ancora iscritto ad alcun evento.</p>
+            )}
+          </div>
+        )}
       </section>
 
       {/* 🔹 Pulsante Crea Evento */}
