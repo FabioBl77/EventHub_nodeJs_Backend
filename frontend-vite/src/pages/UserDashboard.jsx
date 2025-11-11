@@ -1,12 +1,14 @@
 // src/pages/UserDashboard.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import EventCard from "../components/EventCard";
 import "../styles/UserDashboard.css";
+import { AuthContext } from "../context/AuthContext";
 
 export default function UserDashboard() {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
   const [publicEvents, setPublicEvents] = useState([]);
   const [createdEvents, setCreatedEvents] = useState([]);
@@ -87,22 +89,17 @@ export default function UserDashboard() {
 
   // 🔹 Aggiorna la UI dopo iscrizione / disiscrizione (senza refresh)
   const handleToggleRegistration = (eventId, nowRegistered) => {
-    // Trova l'evento in una delle liste
     const allEvents = [...publicEvents, ...createdEvents, ...registeredEvents];
     const event = allEvents.find((e) => e.id === eventId);
     if (!event) return;
 
     if (nowRegistered) {
-      // ✅ L'utente si è appena iscritto
       if (!registeredEvents.some((e) => e.id === eventId)) {
         setRegisteredEvents((prev) => [...prev, event]);
       }
-      // Rimuovi l'evento da "Eventi disponibili"
       setPublicEvents((prev) => prev.filter((e) => e.id !== eventId));
     } else {
-      // ❌ L'utente ha annullato l'iscrizione
       setRegisteredEvents((prev) => prev.filter((e) => e.id !== eventId));
-      // Riaggiungi l'evento a "Eventi disponibili"
       if (!publicEvents.some((e) => e.id === eventId)) {
         setPublicEvents((prev) => [...prev, event]);
       }
@@ -112,7 +109,10 @@ export default function UserDashboard() {
   if (loading) {
     return (
       <div className="dashboard-page">
-        <h1>Benvenuto nella tua Dashboard</h1>
+        <h1 className="dashboard-title">
+          Benvenuto nella tua Dashboard
+          {user?.username ? `, ${user.username}!` : "!"}
+        </h1>
         <p>Caricamento eventi...</p>
       </div>
     );
@@ -120,7 +120,11 @@ export default function UserDashboard() {
 
   return (
     <div className="dashboard-page">
-      <h1>Benvenuto nella tua Dashboard</h1>
+      {/* 🔹 Titolo con nome utente */}
+      <h1 className="dashboard-title">
+        Benvenuto nella tua Dashboard
+        {user?.username ? `, ${user.username}!` : "!"}
+      </h1>
 
       {error && <p className="error">{error}</p>}
 

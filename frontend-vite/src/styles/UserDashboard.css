@@ -208,3 +208,16 @@
   margin-top: 10px;
   font-weight: 500;
 }
+/* 🔹 Titolo Dashboard */
+.dashboard-title {
+  background: linear-gradient(135deg, #86a1ec, #b6caeb);
+  color: white;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  padding: 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  margin-bottom: 2rem;
+  letter-spacing: 0.5px;
+}
