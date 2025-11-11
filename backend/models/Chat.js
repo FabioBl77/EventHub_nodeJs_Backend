@@ -27,13 +27,15 @@ Chat.init(
     },
     userId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true, // ✅ permette i messaggi di sistema senza autore
       references: {
-        model: User,
-        key: 'id'
+        model: "Users",
+        key: "id",
       },
-      onDelete: 'CASCADE'
-    }
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    },
+
   },
   {
     sequelize,

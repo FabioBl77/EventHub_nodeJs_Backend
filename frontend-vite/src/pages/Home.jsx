@@ -26,7 +26,7 @@ export default function Home() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % latestEvents.length);
-    }, 3000);
+    }, 4000);
     return () => clearInterval(interval);
   }, [latestEvents]);
 

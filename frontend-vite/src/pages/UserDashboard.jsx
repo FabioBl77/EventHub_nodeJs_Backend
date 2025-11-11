@@ -1,9 +1,13 @@
+// src/pages/UserDashboard.jsx
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import EventCard from "../components/EventCard";
 import "../styles/UserDashboard.css";
 
 export default function UserDashboard() {
+  const navigate = useNavigate();
+
   const [publicEvents, setPublicEvents] = useState([]);
   const [createdEvents, setCreatedEvents] = useState([]);
   const [registeredEvents, setRegisteredEvents] = useState([]);
@@ -17,7 +21,6 @@ export default function UserDashboard() {
       setError("");
       setLoading(true);
 
-      // Chiamate ai tuoi endpoint backend
       const [publicRes, dashboardRes] = await Promise.all([
         api.get("/events"),
         api.get("/events/dashboard"),
@@ -30,6 +33,7 @@ export default function UserDashboard() {
       console.error("❌ Errore nel caricamento della dashboard:", err);
       if (err.response?.status === 401) {
         setError("Devi effettuare il login per accedere alla dashboard.");
+        setTimeout(() => navigate("/login"), 1500);
       } else {
         setError("Errore nel caricamento degli eventi.");
       }
@@ -40,6 +44,7 @@ export default function UserDashboard() {
 
   useEffect(() => {
     fetchEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 🔍 Gestione filtri locali
@@ -47,29 +52,71 @@ export default function UserDashboard() {
     setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 
-  // 🔎 Funzione di filtraggio frontend
+  // 🔎 Filtraggio frontend
   const applyFilters = (events) => {
     return events.filter((event) => {
       const matchesDate =
         !filters.date ||
-        new Date(event.date).toDateString() === new Date(filters.date).toDateString();
+        (event.date &&
+          new Date(event.date).toDateString() ===
+            new Date(filters.date).toDateString());
 
       const matchesCategory =
         !filters.category ||
-        event.category?.toLowerCase().includes(filters.category.toLowerCase());
+        (event.category || "")
+          .toLowerCase()
+          .includes(filters.category.toLowerCase());
 
       const matchesLocation =
         !filters.location ||
-        event.location?.toLowerCase().includes(filters.location.toLowerCase());
+        (event.location || "")
+          .toLowerCase()
+          .includes(filters.location.toLowerCase());
 
       return matchesDate && matchesCategory && matchesLocation;
     });
   };
 
-  // 🔎 Applica filtri a tutte le sezioni
   const filteredPublicEvents = applyFilters(publicEvents);
   const filteredCreatedEvents = applyFilters(createdEvents);
   const filteredRegisteredEvents = applyFilters(registeredEvents);
+
+  // 🔹 Verifica se l'utente è iscritto a un evento
+  const isEventRegistered = (eventId) =>
+    registeredEvents.some((e) => e.id === eventId);
+
+  // 🔹 Aggiorna la UI dopo iscrizione / disiscrizione (senza refresh)
+  const handleToggleRegistration = (eventId, nowRegistered) => {
+    // Trova l'evento in una delle liste
+    const allEvents = [...publicEvents, ...createdEvents, ...registeredEvents];
+    const event = allEvents.find((e) => e.id === eventId);
+    if (!event) return;
+
+    if (nowRegistered) {
+      // ✅ L'utente si è appena iscritto
+      if (!registeredEvents.some((e) => e.id === eventId)) {
+        setRegisteredEvents((prev) => [...prev, event]);
+      }
+      // Rimuovi l'evento da "Eventi disponibili"
+      setPublicEvents((prev) => prev.filter((e) => e.id !== eventId));
+    } else {
+      // ❌ L'utente ha annullato l'iscrizione
+      setRegisteredEvents((prev) => prev.filter((e) => e.id !== eventId));
+      // Riaggiungi l'evento a "Eventi disponibili"
+      if (!publicEvents.some((e) => e.id === eventId)) {
+        setPublicEvents((prev) => [...prev, event]);
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="dashboard-page">
+        <h1>Benvenuto nella tua Dashboard</h1>
+        <p>Caricamento eventi...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-page">
@@ -101,62 +148,66 @@ export default function UserDashboard() {
         />
       </div>
 
-      {loading ? (
-        <p>Caricamento eventi...</p>
-      ) : (
-        <>
-          {/* 🔹 Eventi pubblici */}
-          <section>
-            <h2>Eventi disponibili</h2>
-            <div className="events-grid">
-              {filteredPublicEvents.length > 0 ? (
-                filteredPublicEvents.map((event) => (
-                  <EventCard key={event.id} event={event} onAction={fetchEvents} />
-                ))
-              ) : (
-                <p>Nessun evento disponibile.</p>
-              )}
-            </div>
-          </section>
+      {/* 🔹 Eventi disponibili */}
+      <section>
+        <h2>Eventi disponibili</h2>
+        <div className="events-grid">
+          {filteredPublicEvents.length > 0 ? (
+            filteredPublicEvents.map((event) => (
+              <EventCard
+                key={event.id}
+                event={event}
+                isRegistered={isEventRegistered(event.id)}
+                onToggleRegistration={handleToggleRegistration}
+              />
+            ))
+          ) : (
+            <p>Nessun evento disponibile.</p>
+          )}
+        </div>
+      </section>
 
-          {/* 🔹 Eventi creati da te */}
-          <section>
-            <h2>I miei eventi creati</h2>
-            <div className="events-grid">
-              {filteredCreatedEvents.length > 0 ? (
-                filteredCreatedEvents.map((event) => (
-                  <EventCard key={event.id} event={event} onAction={fetchEvents} />
-                ))
-              ) : (
-                <p>Non hai ancora creato eventi.</p>
-              )}
-            </div>
-          </section>
+      {/* 🔹 Eventi creati da te */}
+      <section>
+        <h2>I miei eventi creati</h2>
+        <div className="events-grid">
+          {filteredCreatedEvents.length > 0 ? (
+            filteredCreatedEvents.map((event) => (
+              <EventCard
+                key={event.id}
+                event={event}
+                isRegistered={isEventRegistered(event.id)}
+                onToggleRegistration={handleToggleRegistration}
+              />
+            ))
+          ) : (
+            <p>Non hai ancora creato eventi.</p>
+          )}
+        </div>
+      </section>
 
-          {/* 🔹 Eventi a cui sei iscritto */}
-          <section>
-            <h2>Eventi a cui sei iscritto</h2>
-            <div className="events-grid">
-              {filteredRegisteredEvents.length > 0 ? (
-                filteredRegisteredEvents.map((event) => (
-                  <EventCard
-                    key={event.id}
-                    event={event}
-                    onAction={fetchEvents}
-                    isRegisteredSection={true} // 👈 cambia bottone in "Annulla iscrizione"
-                  />
-                ))
-              ) : (
-                <p>Non sei ancora iscritto ad alcun evento.</p>
-              )}
-            </div>
-          </section>
-        </>
-      )}
+      {/* 🔹 Eventi a cui sei iscritto */}
+      <section>
+        <h2>Eventi a cui sei iscritto</h2>
+        <div className="events-grid">
+          {filteredRegisteredEvents.length > 0 ? (
+            filteredRegisteredEvents.map((event) => (
+              <EventCard
+                key={event.id}
+                event={event}
+                isRegistered={true}
+                onToggleRegistration={handleToggleRegistration}
+              />
+            ))
+          ) : (
+            <p>Non sei ancora iscritto ad alcun evento.</p>
+          )}
+        </div>
+      </section>
 
       {/* 🔹 Pulsante Crea Evento */}
       <button
-        onClick={() => (window.location.href = "/create-event")}
+        onClick={() => navigate("/create-event")}
         className="btn-create"
       >
         ➕ Crea nuovo evento

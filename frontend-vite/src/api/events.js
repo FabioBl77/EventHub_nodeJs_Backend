@@ -1,44 +1,57 @@
 import api from "./api";
 
-// 🔹 Recupera tutti gli eventi pubblici
-export const getAllEvents = () => api.get("/events/public");
+// Recupera tutti gli eventi pubblici
+export const getAllEvents = () => api.get("/events");
 
-// 🔹 Recupera gli eventi creati dall’utente loggato
-export const getMyEvents = () => api.get("/events/mine");
+// Recupera eventi creati e a cui l'utente è iscritto (dashboard)
+export const getDashboard = () => api.get("/events/dashboard");
 
-// 🔹 Recupera gli eventi a cui l’utente è iscritto
-export const getRegisteredEvents = () => api.get("/events/registered");
+// Helpers per liste specifiche
+export const getMyEvents = async () => {
+  const res = await getDashboard();
+  return res.data?.createdEvents || [];
+};
 
-// 🔹 Recupera i dettagli di un singolo evento
+export const getRegisteredEvents = async () => {
+  const res = await getDashboard();
+  return res.data?.joinedEvents || [];
+};
+
+// Recupera i dettagli di un singolo evento
 export const getEventById = (id) => api.get(`/events/${id}`);
 
-// 🔹 Crea un nuovo evento
+// Crea/Aggiorna/Cancella evento
 export const createEvent = (eventData) => api.post("/events", eventData);
-
-// 🔹 Aggiorna un evento
 export const updateEvent = (id, eventData) => api.put(`/events/${id}`, eventData);
-
-// 🔹 Cancella un evento
 export const deleteEvent = (id) => api.delete(`/events/${id}`);
 
-// 🔹 Iscrizione a un evento
+// Iscrizione e annullamento
 export const registerToEvent = (id) => api.post(`/events/${id}/register`);
+export const cancelRegistration = (id) => api.delete(`/events/${id}/cancel`);
 
-// 🔹 Annulla iscrizione a un evento
-export const cancelRegistration = (id) => api.post(`/events/${id}/cancel`);
+// Segnala un evento
+export const reportEvent = (id, reason) => api.post(`/events/${id}/report`, { reason });
 
-// 🔹 Segnala un evento (es. spam, contenuti inappropriati, ecc.)
-export const reportEvent = (id, reason) =>
-  api.post(`/events/${id}/report`, { reason });
+// Filtra eventi pubblici per categoria, data o luogo
+export const filterEvents = (filters) => api.get("/events/filter", { params: filters });
 
-// 🔹 Filtra eventi pubblici per categoria, data o luogo
-export const filterEvents = (filters) =>
-  api.get("/events/filter", { params: filters });
+// Filtra i miei eventi (client-side via dashboard)
+export const filterMyEvents = async (filters) => {
+  const list = await getMyEvents();
+  return list.filter((e) =>
+    (!filters.date || new Date(e.date).toDateString() === new Date(filters.date).toDateString()) &&
+    (!filters.category || (e.category || "").toLowerCase().includes(filters.category.toLowerCase())) &&
+    (!filters.location || (e.location || "").toLowerCase().includes(filters.location.toLowerCase()))
+  );
+};
 
-// 🔹 Filtra i miei eventi per categoria, data o luogo
-export const filterMyEvents = (filters) =>
-  api.get("/events/mine/filter", { params: filters });
+// Filtra gli eventi a cui sono iscritto (client-side via dashboard)
+export const filterRegisteredEvents = async (filters) => {
+  const list = await getRegisteredEvents();
+  return list.filter((e) =>
+    (!filters.date || new Date(e.date).toDateString() === new Date(filters.date).toDateString()) &&
+    (!filters.category || (e.category || "").toLowerCase().includes(filters.category.toLowerCase())) &&
+    (!filters.location || (e.location || "").toLowerCase().includes(filters.location.toLowerCase()))
+  );
+};
 
-// 🔹 Filtra gli eventi a cui sono iscritto
-export const filterRegisteredEvents = (filters) =>
-  api.get("/events/registered/filter", { params: filters });

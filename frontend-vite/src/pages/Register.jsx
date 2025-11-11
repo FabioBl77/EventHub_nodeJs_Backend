@@ -1,16 +1,17 @@
 import { useState } from "react";
-import api from "../api/api"; // l'istanza Axios creata in src/api/api.js
-import "../styles/Login.css"; // riutilizziamo lo stile esistente
+import { useNavigate, Link } from "react-router-dom";
+import api from "../api/api";
+import { toast } from "react-toastify";
+import "../styles/Register.css";
 
 export default function Register() {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-
-  const [message, setMessage] = useState(""); // messaggi di successo/errore
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -20,55 +21,50 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // semplice validazione lato client
+    // ✅ Controlla che le password coincidano
     if (form.password !== form.confirmPassword) {
-      setMessage("Le password non coincidono");
+      toast.warning("Le password non coincidono.", { position: "top-center" });
       return;
     }
 
     setLoading(true);
-    setMessage("");
 
     try {
-      const res = await api.post("/auth/register", {
+      await api.post("/auth/register", {
         username: form.username,
         email: form.email,
         password: form.password,
       });
 
-      setMessage(res.data.message); // "Registrazione completata. Controlla la tua email..."
-      setForm({
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      });
+      toast.success(
+        "Registrazione completata! Controlla la tua email per confermare l'account.",
+        { position: "top-center", autoClose: 5000 }
+      );
+
+      navigate("/login");
     } catch (err) {
-      console.error(err);
-      if (err.response && err.response.data?.message) {
-        setMessage(err.response.data.message);
-      } else {
-        setMessage("Errore durante la registrazione");
-      }
+      console.error("Errore registrazione:", err);
+      const msg =
+        err.response?.data?.message ||
+        "Errore durante la registrazione. Riprova più tardi.";
+      toast.error(msg, { position: "top-center" });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="login-page">
-      <div className="login-card">
-        <h1>Crea il tuo account</h1>
-        <p className="subtitle">Unisciti alla community di EventHub</p>
-
-        {message && <p className="message">{message}</p>}
+    <div className="register-page">
+      <div className="register-card">
+        <h1>Crea un nuovo account</h1>
+        <p className="subtitle">Registrati su EventHub per creare o scoprire eventi</p>
 
         <form onSubmit={handleSubmit}>
-          <label>Nome completo</label>
+          <label>Username</label>
           <input
             type="text"
             name="username"
-            placeholder="Es. Mario Rossi"
+            placeholder="Il tuo nome utente"
             value={form.username}
             onChange={handleChange}
             required
@@ -78,7 +74,7 @@ export default function Register() {
           <input
             type="email"
             name="email"
-            placeholder="Inserisci la tua email"
+            placeholder="La tua email"
             value={form.email}
             onChange={handleChange}
             required
@@ -98,7 +94,7 @@ export default function Register() {
           <input
             type="password"
             name="confirmPassword"
-            placeholder="••••••••"
+            placeholder="Ripeti la password"
             value={form.confirmPassword}
             onChange={handleChange}
             required
@@ -109,8 +105,8 @@ export default function Register() {
           </button>
         </form>
 
-        <p className="signup-text">
-          Hai già un account? <a href="/login">Accedi</a>
+        <p className="login-text">
+          Hai già un account? <Link to="/login">Accedi</Link>
         </p>
       </div>
     </div>

@@ -1,40 +1,210 @@
-.dashboard-container {
-  max-width: 1100px;
-  margin: 2rem auto;
-  padding: 1rem;
+/* ==============================
+   DASHBOARD UTENTE
+============================== */
+
+.dashboard-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: #1f2937;
 }
 
-.dashboard-title {
+.dashboard-page h1 {
   text-align: center;
+  margin-bottom: 20px;
+  color: #1e3a8a;
   font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #333;
 }
 
-.dashboard-section {
-  margin-bottom: 3rem;
+/* ==============================
+   SEZIONE FILTRI
+============================== */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 1.5rem;
 }
 
-.dashboard-section h2 {
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
-  color: #444;
+.filters input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
 }
 
-.event-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+.filters input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 4px rgba(59, 130, 246, 0.4);
 }
 
-.empty-text {
-  color: #888;
-  font-style: italic;
+/* ==============================
+   CARD EVENTO
+============================== */
+
+.event-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
 }
 
-.dashboard-loading,
-.dashboard-error {
+.event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  border-color: #3b82f6;
+}
+
+/* Immagine evento */
+.event-image {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Info testo */
+.event-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 1rem;
+  gap: 0.4rem;
+}
+
+.event-info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin: 0;
+}
+
+.event-info p {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* ==============================
+   BOTTONI
+============================== */
+
+.action-btn {
+  width: 100%;
+  margin-top: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Blu = Iscriviti */
+.btn-join {
+  background-color: #2563eb;
+  color: #fff;
+}
+.btn-join:hover {
+  background-color: #1e40af;
+}
+
+/* Grigio = Annulla iscrizione */
+.btn-cancel {
+  background-color: #4b5563;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background-color: #374151;
+}
+
+/* Bottone Dettagli */
+.details-btn {
+  margin-top: 0.6rem;
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.9rem;
   text-align: center;
-  font-size: 1.2rem;
-  padding: 2rem;
+  text-decoration: none;
+  display: block;
+  transition: background 0.3s ease;
+}
+.details-btn:hover {
+  background-color: #1e40af;
+}
+
+/* ==============================
+   LAYOUT GRID RESPONSIVE
+============================== */
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+  justify-items: center;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .event-card {
+    width: 100%;
+  }
+
+  .dashboard-page h1 {
+    font-size: 1.6rem;
+  }
+
+  .filters input {
+    width: 90%;
+  }
+}
+
+/* ==============================
+   PULSANTE CREA EVENTO
+============================== */
+
+.btn-create {
+  display: block;
+  margin: 2rem auto;
+  padding: 0.8rem 1.6rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-create:hover {
+  background-color: #1e40af;
+  transform: scale(1.05);
+}
+
+/* ==============================
+   MESSAGGI ED ERRORI
+============================== */
+
+.error {
+  color: #dc2626;
+  text-align: center;
+  margin-top: 10px;
+  font-weight: 500;
 }

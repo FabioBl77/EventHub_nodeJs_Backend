@@ -232,6 +232,27 @@ router.post('/:eventId/report', authMiddleware, eventController.reportEvent);
 
 /**
  * @swagger
+ * /events/{eventId}:
+ *   get:
+ *     summary: Ottiene i dettagli di un singolo evento
+ *     tags: [Events]
+ *     parameters:
+ *       - name: eventId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Dettagli evento
+ *       404:
+ *         description: Evento non trovato
+ */
+router.get('/:eventId', eventController.getEventById);
+
+
+/**
+ * @swagger
  * /events/filter:
  *   get:
  *     summary: Filtra eventi per data, categoria e luogo
@@ -258,6 +279,58 @@ router.post('/:eventId/report', authMiddleware, eventController.reportEvent);
  *         description: Lista eventi filtrati
  */
 router.get('/filter', eventController.filterEvents);
+
+// 📩 Chat - importa il controller chat
+const chatController = require("../controllers/chatController");
+
+/**
+ * @swagger
+ * /events/{eventId}/chat:
+ *   get:
+ *     summary: Recupera la cronologia dei messaggi di chat per un evento
+ *     tags: [Chat]
+ *     parameters:
+ *       - name: eventId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Elenco dei messaggi della chat dell'evento
+ */
+router.get("/:eventId/chat", chatController.getMessagesByEvent);
+
+/**
+ * @swagger
+ * /events/{eventId}/chat:
+ *   post:
+ *     summary: Invia un messaggio nella chat di un evento
+ *     tags: [Chat]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: eventId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               content:
+ *                 type: string
+ *             required:
+ *               - content
+ *     responses:
+ *       201:
+ *         description: Messaggio inviato e salvato
+ */
+router.post("/:eventId/chat", authMiddleware, chatController.sendMessage);
 
 
 module.exports = router;

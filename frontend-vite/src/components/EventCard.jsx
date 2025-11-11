@@ -1,23 +1,51 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { registerToEvent, cancelRegistration } from "../api/events";
+import { toast } from "react-toastify"; // 🔹 import toastify
 import "../styles/EventCard.css";
 
-export default function EventCard({ event, onAction, isRegisteredSection = false }) {
-  // Gestione iscrizione / annullamento
+export default function EventCard({ event, isRegistered, onToggleRegistration }) {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
   const handleRegistration = async () => {
     try {
-      if (isRegisteredSection) {
-        await cancelRegistration(event.id);
-        alert("Hai annullato la tua iscrizione all'evento!");
-      } else {
-        await registerToEvent(event.id);
-        alert("Ti sei iscritto con successo all'evento!");
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.warning("Devi essere loggato per iscriverti a un evento.", {
+          position: "top-center",
+        });
+        navigate("/login");
+        return;
       }
 
-      if (onAction) onAction(); // aggiorna dashboard
+      setLoading(true);
+
+      if (isRegistered) {
+        // 🔹 Annulla iscrizione
+        await cancelRegistration(event.id);
+        toast.info(`Hai annullato l'iscrizione all'evento "${event.title}"`, {
+          position: "top-center",
+        });
+        onToggleRegistration && onToggleRegistration(event.id, false);
+      } else {
+        // 🔹 Nuova iscrizione
+        await registerToEvent(event.id);
+        toast.success(`Ti sei iscritto all'evento "${event.title}"!`, {
+          position: "top-center",
+        });
+        onToggleRegistration && onToggleRegistration(event.id, true);
+      }
     } catch (error) {
-      console.error("Errore durante l'iscrizione:", error);
-      alert("Si è verificato un errore, riprova più tardi.");
+      console.error("Errore durante l'iscrizione/annullamento:", error);
+      const msg =
+        error.response?.data?.message ||
+        error.message ||
+        "Si è verificato un errore, riprova più tardi.";
+
+      toast.error(msg, { position: "top-center" });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -31,9 +59,11 @@ export default function EventCard({ event, onAction, isRegisteredSection = false
 
       <div className="event-info">
         <h3>{event.title}</h3>
+
         {event.description && (
           <p>{event.description.substring(0, 100)}...</p>
         )}
+
         <p>
           <strong>Luogo:</strong> {event.location}
         </p>
@@ -42,17 +72,20 @@ export default function EventCard({ event, onAction, isRegisteredSection = false
           {event.date ? new Date(event.date).toLocaleDateString("it-IT") : "N/D"}
         </p>
 
-        {/* 🔹 Bottone iscrizione o annullamento */}
+        {/* 🔹 Bottone dinamico */}
         <button
-          className={`action-btn ${
-            isRegisteredSection ? "btn-cancel" : "btn-join"
-          }`}
+          className={`action-btn ${isRegistered ? "btn-cancel" : "btn-join"}`}
           onClick={handleRegistration}
+          disabled={loading}
         >
-          {isRegisteredSection ? "Annulla iscrizione" : "Iscriviti"}
+          {loading
+            ? "Attendere..."
+            : isRegistered
+            ? "Annulla iscrizione"
+            : "Iscriviti"}
         </button>
 
-        {/* 🔹 Pulsante Dettagli */}
+        {/* 🔹 Link ai dettagli evento */}
         <Link to={`/event/${event.id}`} className="details-btn">
           Dettagli
         </Link>

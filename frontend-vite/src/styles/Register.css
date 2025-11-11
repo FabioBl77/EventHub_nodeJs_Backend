@@ -1,0 +1,70 @@
+/* src/styles/Register.css */
+.register-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.register-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 420px;
+  width: 100%;
+}
+
+.register-card h1 {
+  text-align: center;
+  color: #1e3a8a;
+}
+
+.register-card .subtitle {
+  text-align: center;
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.register-card label {
+  font-weight: 600;
+  color: #374151;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.register-card input {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.register-card input:focus {
+  border-color: #2563eb;
+}
+
+.register-card .btn {
+  width: 100%;
+  background-color: #2563eb;
+  color: white;
+  font-weight: 600;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.register-card .btn:hover {
+  background-color: #1d4ed8;
+}
+
+.login-text {
+  text-align: center;
+  margin-top: 1rem;
+}
