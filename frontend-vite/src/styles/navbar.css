@@ -1,59 +1,84 @@
-/* navbar.css */
+/* --- Navbar Sticky --- */
 .navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #1e3a8a; /* blu intenso */
+  color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 1rem;
-  background-color: #1e40af; /* blu scuro */
-  color: white;
+  padding: 0.8rem 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-.navbar a {
-  color: white;
-  text-decoration: none;
-  margin-right: 1rem;
-  font-weight: bold;
-}
-
+/* --- Logo --- */
 .navbar-logo a {
-  font-size: 1.5rem;
+  color: white;
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease;
 }
 
+.navbar-logo a:hover {
+  color: #93c5fd;
+}
+
+/* --- Links --- */
 .navbar-links {
   list-style: none;
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   margin: 0;
   padding: 0;
+  align-items: center;
 }
 
-.btn-logout {
-  background-color: #f87171; /* rosso chiaro */
-  border: none;
+.navbar-links li a {
   color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar-links li a:hover {
+  color: #93c5fd;
+}
+
+/* --- Logout button --- */
+.btn-logout {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.4rem 1rem;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 500;
+  transition: background 0.3s ease, transform 0.1s ease;
 }
 
 .btn-logout:hover {
-  background-color: #ef4444;
+  background-color: #dc2626;
+  transform: translateY(-1px);
 }
 
-/* RESPONSIVE: mobile */
+/* --- Responsive --- */
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
     align-items: flex-start;
+    padding: 1rem;
   }
 
   .navbar-links {
-    flex-direction: column;
-    width: 100%;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.5rem;
   }
 
-  .navbar-links li {
-    margin: 0.5rem 0;
+  .navbar-logo {
+    margin-bottom: 0.5rem;
   }
 }

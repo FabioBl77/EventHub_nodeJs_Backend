@@ -1,13 +1,16 @@
-import { useState } from "react";
+// src/pages/Login.jsx
+import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/api";
-import { toast } from "react-toastify";
+import { AuthContext } from "../context/AuthContext";
 import "../styles/Login.css";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext); // ✅ prendiamo la funzione login dal contesto
+
   const [form, setForm] = useState({ email: "", password: "" });
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -15,34 +18,27 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setError("");
 
     try {
       const res = await api.post("/auth/login", form);
       const { user, token } = res.data;
 
-      if (!token) throw new Error("Token non ricevuto dal server.");
-
-      localStorage.setItem("user", JSON.stringify(user));
+      // ✅ salva il token per le chiamate API
       localStorage.setItem("token", token);
 
-      toast.success(`Benvenuto ${user.username || ""}!`, {
-        position: "top-center",
-      });
+      // ✅ aggiorna subito il contesto → Navbar si aggiorna senza refresh
+      login(user);
 
+      // ✅ redirect alla dashboard
       navigate("/dashboard");
     } catch (err) {
-      console.error("Errore login:", err);
-
-      let msg = "Errore durante il login.";
-      if (err.response?.status === 401)
-        msg = "Email o password non corretti.";
-      else if (err.response?.data?.message)
-        msg = err.response.data.message;
-
-      toast.error(msg, { position: "top-center" });
-    } finally {
-      setLoading(false);
+      console.error(err);
+      if (err.response && err.response.data?.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Errore durante il login.");
+      }
     }
   };
 
@@ -50,7 +46,9 @@ export default function Login() {
     <div className="login-page">
       <div className="login-card">
         <h1>Accedi a EventHub</h1>
-        <p className="subtitle">Inserisci le tue credenziali per continuare</p>
+        <p className="subtitle">Benvenuto! Inserisci le tue credenziali</p>
+
+        {error && <p className="error">{error}</p>}
 
         <form onSubmit={handleSubmit}>
           <label>Email</label>
@@ -73,8 +71,8 @@ export default function Login() {
             required
           />
 
-          <button type="submit" className="btn" disabled={loading}>
-            {loading ? "Accesso in corso..." : "Accedi"}
+          <button type="submit" className="btn">
+            Accedi
           </button>
         </form>
 
