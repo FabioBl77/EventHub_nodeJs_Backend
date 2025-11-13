@@ -9,7 +9,7 @@
 }
 
 .dashboard-title {
-  background: linear-gradient(135deg, #86a1ec, #b6caeb);
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
   color: white;
   text-align: center;
   font-size: 2rem;
@@ -22,29 +22,51 @@
 }
 
 /* ==============================
-   SEZIONE FILTRI
+   SEZIONE FILTRI (nuovo stile coerente con Filters.css)
 ============================== */
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 1.5rem;
+.filters-container {
+  margin-bottom: 2rem;
+  background: #f9fafb;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-.filters input {
-  padding: 10px;
+.filters-title {
+  text-align: center;
+  color: #1e3a8a;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.5px;
+}
+
+.filters-inputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.filters-inputs input {
+  padding: 0.8rem;
+  border: 1px solid #cbd5e1;
   border-radius: 8px;
-  border: 1px solid #d1d5db;
-  font-size: 0.95rem;
-  transition: border 0.2s ease, box-shadow 0.2s ease;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.filters input:focus {
-  outline: none;
+.filters-inputs input:focus {
   border-color: #3b82f6;
-  box-shadow: 0 0 4px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
 }
+
+/* Allineamento con la dashboard */
+.dashboard-page .filters-container {
+  margin-top: 1rem;
+}
+
 
 /* ==============================
    SEZIONI COLLASSABILI

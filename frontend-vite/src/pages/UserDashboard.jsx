@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import EventCard from "../components/EventCard";
+import Filters from "../components/Filters";
 import "../styles/UserDashboard.css";
 import { AuthContext } from "../context/AuthContext";
 
@@ -12,11 +13,16 @@ export default function UserDashboard() {
   const [publicEvents, setPublicEvents] = useState([]);
   const [createdEvents, setCreatedEvents] = useState([]);
   const [registeredEvents, setRegisteredEvents] = useState([]);
-  const [filters, setFilters] = useState({ date: "", category: "", location: "" });
+  const [filters, setFilters] = useState({
+    title: "",
+    date: "",
+    category: "",
+    location: "",
+  });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // 🔽 Stati visibilità sezioni (inizializzati da localStorage)
+  // 🔹 Stato visibilità sezioni
   const [showAvailable, setShowAvailable] = useState(() => {
     const saved = localStorage.getItem("showAvailable");
     return saved === null ? true : JSON.parse(saved);
@@ -30,20 +36,18 @@ export default function UserDashboard() {
     return saved === null ? true : JSON.parse(saved);
   });
 
-  // 📌 Salva automaticamente quando cambia una sezione
+  // 🔹 Salva stato visibilità
   useEffect(() => {
     localStorage.setItem("showAvailable", JSON.stringify(showAvailable));
   }, [showAvailable]);
-
   useEffect(() => {
     localStorage.setItem("showCreated", JSON.stringify(showCreated));
   }, [showCreated]);
-
   useEffect(() => {
     localStorage.setItem("showRegistered", JSON.stringify(showRegistered));
   }, [showRegistered]);
 
-  // 📌 Carica tutti gli eventi e la dashboard personale
+  // 🔹 Fetch eventi
   const fetchEvents = async () => {
     try {
       setError("");
@@ -75,30 +79,30 @@ export default function UserDashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 🔍 Gestione filtri locali
-  const handleFilterChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
-  };
-
-  // 🔎 Filtraggio frontend
+  // 🔍 Filtri
   const applyFilters = (events) =>
     events.filter((event) => {
-      const matchesDate =
+      const matchTitle =
+        !filters.title ||
+        (event.title || "")
+          .toLowerCase()
+          .includes(filters.title.toLowerCase());
+      const matchDate =
         !filters.date ||
         (event.date &&
           new Date(event.date).toDateString() ===
             new Date(filters.date).toDateString());
-      const matchesCategory =
+      const matchCategory =
         !filters.category ||
         (event.category || "")
           .toLowerCase()
           .includes(filters.category.toLowerCase());
-      const matchesLocation =
+      const matchLocation =
         !filters.location ||
         (event.location || "")
           .toLowerCase()
           .includes(filters.location.toLowerCase());
-      return matchesDate && matchesCategory && matchesLocation;
+      return matchTitle && matchDate && matchCategory && matchLocation;
     });
 
   const filteredPublicEvents = applyFilters(publicEvents);
@@ -109,7 +113,7 @@ export default function UserDashboard() {
   const isEventRegistered = (eventId) =>
     registeredEvents.some((e) => e.id === eventId);
 
-  // 🔹 Aggiorna UI dopo iscrizione / disiscrizione
+  // 🔹 Aggiorna liste dopo iscrizione/disiscrizione
   const handleToggleRegistration = (eventId, nowRegistered) => {
     const allEvents = [...publicEvents, ...createdEvents, ...registeredEvents];
     const event = allEvents.find((e) => e.id === eventId);
@@ -128,51 +132,29 @@ export default function UserDashboard() {
     }
   };
 
+  // 🔹 Loading
   if (loading) {
     return (
       <div className="dashboard-page">
         <h1 className="dashboard-title">
-          Benvenuto nella tua Dashboard
-          {user?.username ? `, ${user.username}!` : "!"}
+          Benvenuto nella tua Dashboard {user?.username ? `${user.username}!` : "!"}
         </h1>
         <p>Caricamento eventi...</p>
       </div>
     );
   }
 
+  // 🔹 Render
   return (
     <div className="dashboard-page">
-      {/* 🔹 Titolo con nome utente */}
       <h1 className="dashboard-title">
-        Benvenuto nella tua Dashboard
-        {user?.username ? `, ${user.username}!` : "!"}
+        Benvenuto nella tua Dashboard {user?.username ? `${user.username}!` : "!"}
       </h1>
 
       {error && <p className="error">{error}</p>}
 
-      {/* 🔹 Sezione Filtri */}
-      <div className="filters">
-        <input
-          type="date"
-          name="date"
-          value={filters.date}
-          onChange={handleFilterChange}
-        />
-        <input
-          type="text"
-          name="category"
-          placeholder="Categoria"
-          value={filters.category}
-          onChange={handleFilterChange}
-        />
-        <input
-          type="text"
-          name="location"
-          placeholder="Luogo"
-          value={filters.location}
-          onChange={handleFilterChange}
-        />
-      </div>
+      {/* 🔹 Filtri */}
+      <Filters filters={filters} setFilters={setFilters} />
 
       {/* 🔹 Eventi disponibili */}
       <section className="dashboard-section">
@@ -201,7 +183,7 @@ export default function UserDashboard() {
         )}
       </section>
 
-      {/* 🔹 Eventi creati da te */}
+      {/* 🔹 Eventi creati */}
       <section className="dashboard-section">
         <div
           className="section-header"
@@ -228,7 +210,7 @@ export default function UserDashboard() {
         )}
       </section>
 
-      {/* 🔹 Eventi a cui sei iscritto */}
+      {/* 🔹 Eventi iscritti */}
       <section className="dashboard-section">
         <div
           className="section-header"
@@ -255,11 +237,8 @@ export default function UserDashboard() {
         )}
       </section>
 
-      {/* 🔹 Pulsante Crea Evento */}
-      <button
-        onClick={() => navigate("/create-event")}
-        className="btn-create"
-      >
+      {/* 🔹 Pulsante crea evento */}
+      <button onClick={() => navigate("/create-event")} className="btn-create">
         ➕ Crea nuovo evento
       </button>
     </div>

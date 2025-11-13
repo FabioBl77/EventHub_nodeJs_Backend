@@ -1,82 +1,113 @@
+/* ==============================
+   🎟️ EVENT DETAILS PAGE
+============================== */
+
 .event-details-page {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 1.5rem;
+  font-family: "Poppins", sans-serif;
+  color: #1f2937;
 }
 
-/* Hero image */
+/* ==============================
+   🌆 HERO SECTION
+============================== */
 .event-hero {
   position: relative;
   width: 100%;
-  height: clamp(300px, 60vh, 500px);
-  border-radius: 12px;
+  height: clamp(320px, 65vh, 520px);
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .event-hero-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(85%);
+  filter: brightness(75%);
+  transform: scale(1.02);
 }
 
 .event-hero-overlay {
   position: absolute;
   bottom: 0;
-  left: 0;
   width: 100%;
-  padding: 20px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-  color: white;
+  padding: 2rem 1.5rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+  color: #fff;
+  backdrop-filter: blur(2px);
 }
 
 .event-hero-overlay h1 {
-  font-size: 2rem;
-  margin: 0;
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .event-category {
-  font-size: 1rem;
-  color: #a5b4fc;
-  margin-top: 0.4rem;
+  font-size: 1.1rem;
+  color: #93c5fd;
+  font-weight: 500;
 }
 
-/* Info evento */
+/* ==============================
+   📋 EVENT DETAILS BOX
+============================== */
 .event-details-container {
   background: #ffffff;
   margin-top: 2rem;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.event-info-section {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1.5rem;
 }
 
 .event-info-section h2 {
   color: #1e3a8a;
+  font-size: 1.4rem;
   margin-bottom: 1rem;
+  font-weight: 600;
 }
 
 .event-info-section p {
-  margin: 0.5rem 0;
+  margin: 0.4rem 0;
   color: #374151;
+  font-size: 0.95rem;
 }
 
-/* Azioni evento */
+.event-info-section p strong {
+  color: #1e3a8a;
+}
+
+/* ==============================
+   ⚙️ ACTION BUTTONS
+============================== */
 .event-actions {
-  margin-top: 1.5rem;
+  margin-top: 1.8rem;
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.event-actions .btn {
-  padding: 0.6rem 1rem;
+.btn {
+  padding: 0.75rem 1rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s ease;
   color: #fff;
-  transition: background 0.3s ease;
+  width: 100%;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 .btn-join {
@@ -84,6 +115,7 @@
 }
 .btn-join:hover {
   background-color: #1e40af;
+  transform: translateY(-2px);
 }
 
 .btn-cancel {
@@ -91,94 +123,108 @@
 }
 .btn-cancel:hover {
   background-color: #374151;
-}
-
-.btn-report {
-  background-color: #f87171;
-}
-.btn-report:hover {
-  background-color: #dc2626;
+  transform: translateY(-2px);
 }
 
 .btn-update {
   background-color: #10b981;
-  color: white;
 }
 .btn-update:hover {
   background-color: #059669;
+  transform: translateY(-2px);
 }
 
 .btn-delete {
   background-color: #ef4444;
-  color: white;
 }
 .btn-delete:hover {
   background-color: #b91c1c;
+  transform: translateY(-2px);
 }
 
-/* Chat sezione */
+/* 🔹 Riga Modifica / Elimina */
+.edit-delete-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+/* 🔹 Info Creatore */
+.creator-info {
+  background: #f3f4f6;
+  border-left: 4px solid #3b82f6;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  color: #1f2937;
+  font-size: 0.95rem;
+}
+
+/* 🔹 Segnala evento */
+.report-text {
+  color: #dc2626;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  width: 100%;
+  text-align: left;
+  transition: color 0.2s ease, transform 0.1s ease;
+}
+.report-text:hover {
+  color: #b91c1c;
+  text-decoration: underline;
+  transform: translateX(2px);
+}
+
+/* ==============================
+   💬 CHAT SECTION
+============================== */
 .event-chat-section {
   margin-top: 2rem;
 }
-
 .event-chat-section h2 {
   color: #1e3a8a;
   margin-bottom: 1rem;
 }
 
-.chat-placeholder {
-  background: #f3f4f6;
-  border-radius: 8px;
-  padding: 1rem;
-  text-align: center;
-  color: #6b7280;
-  font-style: italic;
-}
-
-/* 🚩 MODAL Segnalazione Evento */
+/* ==============================
+   🚩 MODAL REPORT EVENT
+============================== */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  animation: fadeIn 0.2s ease-in-out;
+  animation: fadeIn 0.25s ease-in-out;
 }
 
 .modal-content {
   background: #ffffff;
-  padding: 1.5rem;
-  border-radius: 12px;
-  max-width: 400px;
+  padding: 1.8rem;
+  border-radius: 14px;
+  max-width: 420px;
   width: 90%;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
   text-align: center;
   animation: slideUp 0.25s ease;
 }
 
 .modal-content h3 {
   color: #1e3a8a;
+  font-size: 1.2rem;
   margin-bottom: 0.5rem;
-}
-
-.modal-content p {
-  color: #374151;
-  margin-bottom: 1rem;
 }
 
 .modal-content textarea {
   width: 100%;
-  padding: 0.5rem;
-  border-radius: 8px;
+  padding: 0.6rem;
+  border-radius: 10px;
   border: 1px solid #d1d5db;
-  resize: none;
   font-family: inherit;
   font-size: 0.95rem;
+  resize: none;
   margin-bottom: 1rem;
 }
 
@@ -188,24 +234,9 @@
   gap: 10px;
 }
 
-.modal-actions .btn-cancel,
-.modal-actions .btn-send {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  cursor: pointer;
-  color: #fff;
-  transition: background 0.3s ease;
-}
-
 .modal-actions .btn-cancel {
   background-color: #6b7280;
 }
-.modal-actions .btn-cancel:hover {
-  background-color: #4b5563;
-}
-
 .modal-actions .btn-send {
   background-color: #2563eb;
 }
@@ -213,116 +244,49 @@
   background-color: #1d4ed8;
 }
 
+/* ==============================
+   ✨ ANIMATIONS
+============================== */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slideUp {
-  from {
-    transform: translateY(30px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
-/* Responsive */
+/* ==============================
+   📱 RESPONSIVE
+============================== */
 @media (max-width: 768px) {
   .event-hero-overlay h1 {
-    font-size: 1.5rem;
-  }
-
-  .event-actions {
-    flex-direction: column;
-    align-items: stretch;
+    font-size: 1.6rem;
   }
 
   .event-details-container {
-    padding: 1rem;
+    padding: 1.3rem;
   }
 
-  .modal-content {
-    max-width: 90%;
+  .edit-delete-row {
+    flex-direction: column;
+  }
+
+  .btn {
+    font-size: 0.95rem;
   }
 }
-
-/* 🔹 Testo "Segnala evento" */
-.report-text {
-  color: #dc2626; /* rosso vivo */
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 10px;
-  text-align: left;
-  display: block;
-  width: 100%;
-  transition: color 0.2s ease, transform 0.1s ease;
-}
-
-.report-text:hover {
-  color: #b91c1c; /* rosso più scuro */
-  text-decoration: underline;
-  transform: translateX(2px);
-}
-
-/* Allinea in colonna nella sezione azioni */
-.event-actions {
-  flex-direction: column;
-  align-items: flex-start;
-}
-/* 🔹 Riga Modifica / Elimina (stile bilanciato e arrotondato) */
-.edit-delete-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 10px;
-  width: 100%;
-}
-
-.edit-delete-row .btn-update,
-.edit-delete-row .btn-delete {
+/* Pulsanti bilanciati nella sezione Modifica / Elimina */
+.btn-action {
   flex: 1;
-  border-radius: 9999px; /* arrotondati come pillole */
-  padding: 0.6rem 0;
-  font-size: 0.95rem;
-  font-weight: 500;
+  padding: 0.8rem 0;
   text-align: center;
-  color: #fff;
-  transition: background 0.3s ease, transform 0.1s ease;
-}
-
-.edit-delete-row .btn-update {
-  background-color: #10b981;
-}
-.edit-delete-row .btn-update:hover {
-  background-color: #059669;
-  transform: translateY(-1px);
-}
-
-.edit-delete-row .btn-delete {
-  background-color: #ef4444;
-}
-.edit-delete-row .btn-delete:hover {
-  background-color: #b91c1c;
-  transform: translateY(-1px);
-}
-
-
-/* 🔹 Box info creatore */
-.creator-info {
-  background: #f3f4f6; /* grigio chiaro */
-  color: #1f2937;
   border-radius: 8px;
-  padding: 0.75rem;
-  margin-bottom: 1rem;
-  font-size: 0.95rem;
-  width: 100%;
-  text-align: left;
-  border-left: 4px solid #3b82f6;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-action:hover {
+  transform: translateY(-2px);
 }

@@ -76,6 +76,28 @@ export default function Login() {
           </button>
         </form>
 
+        {/* 🔹 Sezione Login rapido con OAuth */}
+        <div className="oauth-section">
+          <p className="oauth-title">Oppure accedi con</p>
+          <div className="oauth-buttons">
+            <button
+              type="button"
+              className="btn-oauth google"
+              onClick={() => (window.location.href = "http://localhost:3000/api/auth/google")}
+            >
+              Accedi con Google
+            </button>
+
+            <button
+              type="button"
+              className="btn-oauth github"
+              onClick={() => (window.location.href = "http://localhost:3000/api/auth/github")}
+            >
+              Accedi con GitHub
+            </button>
+          </div>
+        </div>
+
         <p className="forgot-password">
           <Link to="/forgot-password">Hai dimenticato la password?</Link>
         </p>

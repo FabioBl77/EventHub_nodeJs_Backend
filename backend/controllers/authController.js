@@ -216,6 +216,7 @@ const oauthGoogleCallback = async (req, res) => {
   }
 };
 
+
 /**
  * Restituisce i dati dell’utente loggato
  */
@@ -224,13 +225,25 @@ const getMe = async (req, res) => {
     const user = await User.findByPk(req.user.userId, {
       attributes: ['id', 'username', 'email', 'role']
     });
-    if (!user) return res.status(404).json({ message: 'Utente non trovato' });
-    res.json(user);
+
+    if (!user) {
+      return res.status(404).json({ message: 'Utente non trovato' });
+    }
+
+    res.status(200).json({
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+      }
+    });
   } catch (err) {
     console.error('Errore getMe:', err);
     res.status(500).json({ message: 'Errore nel recupero utente' });
   }
 };
+
 
 
 module.exports = {

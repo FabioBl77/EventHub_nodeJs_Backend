@@ -11,6 +11,8 @@ import ConfirmEmail from "./pages/ConfirmEmail";
 import UserDashboard from "./pages/UserDashboard";
 import CreateEvent from "./pages/CreateEvent";
 import EventDetails from "./pages/EventDetails";
+import OauthSuccess from "./pages/OauthSuccess"; 
+import UpdateEvent from "./pages/UpdateEvent";
 
 export default function App() {
   return (
@@ -21,15 +23,19 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-
+          
           <Route path="/create-event" element={<CreateEvent />} /> 
           <Route path="/dashboard" element={<UserDashboard />} />
-
           <Route path="/event/:id" element={<EventDetails />} />
-          
+          <Route path="/update-event/:id" element={<UpdateEvent />} />
+
+
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/confirm-email/:token" element={<ConfirmEmail />} />
+
+          {/* ✅ Nuova rotta per gestione successo OAuth */}
+          <Route path="/oauth-success" element={<OauthSuccess />} />
         </Routes>
       </main>
       <Footer />

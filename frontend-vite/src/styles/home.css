@@ -1,33 +1,41 @@
 /* ==============================
-   HOME PAGE BASE LAYOUT
+   🏠 HOME PAGE - EVENTHUB
 ============================== */
-
 .home-page {
-  padding: 20px;
+  padding: 30px;
   max-width: 1200px;
   margin: 0 auto;
-}
-
-.home-title {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #1a73e8;
-  font-size: 2rem;
-  font-weight: 700;
+  font-family: "Poppins", sans-serif;
+  color: #1f2937;
 }
 
 /* ==============================
-   🎠 CAROSELLO RESPONSIVE
+   🎯 TITOLO PRINCIPALE
 ============================== */
+.home-title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #1e3a8a;
+  font-size: 2.3rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
+/* ==============================
+   🎠 CAROSELLO MODERNO
+============================== */
 .carousel {
   position: relative;
   width: 100%;
-  height: clamp(300px, 60vh, 600px); /* altezza adattiva */
+  height: clamp(500px, 55vh, 550px);
   overflow: hidden;
-  margin-bottom: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 14px;
+  margin-bottom: 40px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  background-color: #f3f4f6;
 }
 
 .carousel-item {
@@ -37,12 +45,14 @@
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: all 0.6s ease-in-out;
+  transform: scale(1.05);
+  transition: all 0.9s ease-in-out;
 }
 
 .carousel-item.active {
   left: 0;
   opacity: 1;
+  transform: scale(1);
 }
 
 .carousel-item img {
@@ -50,30 +60,29 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-  border-radius: 12px;
+  border-radius: 14px;
 }
 
 .carousel-caption {
   position: absolute;
   bottom: 0;
   width: 100%;
+  padding: 0.8rem 1rem;
   background: rgba(0, 0, 0, 0.6);
-  color: #ffffff;
-  padding: 8px 12px;
+  color: #fff;
   text-align: center;
   font-weight: 600;
-  font-size: 1rem;
-  line-height: 1.3;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
+  font-size: 1.1rem;
+  letter-spacing: 0.3px;
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
 }
 
-/* 📱 Responsive tweaks */
+/* --- Responsive carosello --- */
 @media (max-width: 768px) {
   .carousel {
-    height: clamp(220px, 50vh, 400px);
+    height: clamp(220px, 50vh, 380px);
   }
-
   .carousel-caption {
     font-size: 0.9rem;
     padding: 6px;
@@ -81,94 +90,162 @@
 }
 
 /* ==============================
-   🔍 FILTRI
+   Paragrafo descrittivo
 ============================== */
+.home-intro {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  margin: 3rem auto;
+  max-width: 850px;
+  text-align: center;
+  color: #374151;
+  line-height: 1.7;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
+.home-intro:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.home-intro h2 {
+  font-size: 2rem;
+  color: #1e3a8a;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.home-intro p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.home-intro strong {
+  color: #1e3a8a;
+}
+
+
+
+/* ==============================
+   🔍 SEZIONE FILTRI
+============================== */
 .filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 20px;
+  background: #f9fafb;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.filters h2 {
+  text-align: center;
+  color: #1e3a8a;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
 }
 
 .filters input {
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 0.95rem;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  width: 100%;
 }
 
 .filters input:focus {
   outline: none;
-  border-color: #1a73e8;
-  box-shadow: 0 0 4px rgba(26, 115, 232, 0.4);
+  border-color: #3b82f6;
+  box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+}
+
+.filters-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
 }
 
 /* ==============================
    📋 LISTA EVENTI
 ============================== */
-
 .event-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.8rem;
+  justify-items: center;
 }
 
 /* CARD EVENTO */
 .event-card {
-  border: 1px solid #ccc;
-  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
   overflow: hidden;
-  background: #f9f9f9;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
 .event-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  border-color: #3b82f6;
 }
 
 .event-card img {
   width: 100%;
-  height: 150px;
+  height: 160px;
   object-fit: cover;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .event-card h3 {
-  margin: 10px;
-  color: #1a73e8;
+  margin: 12px 12px 6px 12px;
+  color: #1e3a8a;
   font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .event-card p {
-  margin: 0 10px 10px 10px;
-  color: #374151;
+  margin: 0 12px 10px 12px;
+  color: #4b5563;
   font-size: 0.9rem;
-  line-height: 1.3;
+  line-height: 1.4;
+}
+
+/* Nessun evento */
+.no-events {
+  text-align: center;
+  font-size: 1rem;
+  color: #6b7280;
+  margin-top: 1rem;
 }
 
 /* ==============================
-   RESPONSIVE DESIGN
+   RESPONSIVE
 ============================== */
-
 @media (max-width: 600px) {
   .home-title {
-    font-size: 1.6rem;
+    font-size: 1.7rem;
   }
 
   .filters {
-    flex-direction: column;
-    align-items: center;
+    padding: 1rem;
   }
 
-  .filters input {
-    width: 90%;
+  .filters-container {
+    grid-template-columns: 1fr;
   }
 
   .event-card img {
-    height: 130px;
+    height: 140px;
   }
 
   .event-card h3 {

@@ -92,6 +92,25 @@ input:focus {
   text-decoration: underline;
 }
 
+.loading-text {
+  color: #374151;
+  font-style: italic;
+  margin: 1rem 0;
+}
+
+.success {
+  color: #10b981;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+.error {
+  color: #ef4444;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+
 /* Footer */
 footer {
   text-align: center;
@@ -124,6 +143,68 @@ footer {
   }
 
   .btn {
+    padding: 0.8rem;
+  }
+}
+/* === OAuth Section === */
+.oauth-section {
+  margin-top: 1.8rem;
+  text-align: center;
+  border-top: 1px solid #ddd;
+  padding-top: 1.2rem;
+}
+
+.oauth-title {
+  color: #555;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.oauth-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.btn-oauth {
+  border: none;
+  border-radius: 8px;
+  padding: 0.9rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Pulsante Google */
+.btn-oauth.google {
+  background: #e8e8e8;
+  color: #333;
+}
+
+.btn-oauth.google:hover {
+  background: #d0d0d0;
+}
+
+/* Pulsante GitHub */
+.btn-oauth.github {
+  background: #24292f;
+  color: white;
+}
+
+.btn-oauth.github:hover {
+  background: #171a1d;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .oauth-buttons {
+    gap: 0.6rem;
+  }
+
+  .btn-oauth {
+    font-size: 0.9rem;
     padding: 0.8rem;
   }
 }

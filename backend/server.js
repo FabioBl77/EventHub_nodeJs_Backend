@@ -59,6 +59,8 @@ app.use('/api/events', eventRoutes);
 app.use('/api/chats', chatRoutes);
 app.use('/api/notifications', notificationRoutes);
 
+
+
 // 🔹 Swagger docs
 setupSwagger(app);
 

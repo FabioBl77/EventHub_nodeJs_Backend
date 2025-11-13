@@ -29,7 +29,7 @@ export default function EventDetails() {
 
   const currentUserId = user?.userId || user?.id || null;
 
-  // 📦 Carica evento + dashboard utente
+  // Caricamento evento + dashboard utente
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -71,24 +71,24 @@ export default function EventDetails() {
     fetchData();
   }, [id, currentUserId]);
 
-  // 🗑️ Cancella evento
-  const handleDelete = async () => {
-    if (!window.confirm("Sei sicuro di voler cancellare questo evento?")) return;
+  // Elimina evento
+const handleDelete = async () => {
 
-    try {
-      await deleteEvent(id);
-      toast.success("Evento cancellato con successo ✅", { position: "top-center" });
-      navigate("/dashboard");
-    } catch (err) {
-      console.error("Errore cancellazione evento:", err);
-      toast.error("Errore nella cancellazione dell'evento ❌", { position: "top-center" });
-    }
-  };
+  try {
+    await deleteEvent(id);
+    toast.success("Evento eliminato con successo!", { position: "top-center" });
+    setTimeout(() => navigate("/dashboard"), 1200);
+  } catch (err) {
+    console.error("Errore durante l'eliminazione evento:", err);
+    toast.error("Errore durante la cancellazione dell'evento.", { position: "top-center" });
+  }
+};
 
-  // ✏️ Modifica evento
+
+  // Modifica evento
   const handleUpdate = () => navigate(`/update-event/${id}`);
 
-  // ✅ Gestione iscrizione
+  // Gestione iscrizione / disiscrizione
   const handleRegistration = async () => {
     try {
       if (!currentUserId) {
@@ -104,25 +104,29 @@ export default function EventDetails() {
       } else {
         await registerToEvent(id);
         setIsRegistered(true);
-        toast.success("Iscrizione avvenuta con successo!", { position: "top-center" });
+        toast.success("Iscrizione avvenuta con successo.", { position: "top-center" });
       }
     } catch (err) {
       console.error("Errore gestione iscrizione:", err);
-      const msg = err?.response?.data?.message || err?.message || "Errore nella gestione dell'iscrizione.";
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Errore nella gestione dell'iscrizione.";
       toast.error(msg, { position: "top-center" });
     }
   };
 
-  // 🚩 Segnala evento (apre la modale)
+  // Apri modale segnalazione evento
   const openReportModal = () => setShowReportModal(true);
 
-  // 🧭 UI States
+  // Stati UI
   if (loading) return <p className="loading">Caricamento dettagli evento...</p>;
   if (error) return <p className="error">{error}</p>;
   if (!event) return <p>Evento non trovato.</p>;
 
   return (
     <div className="event-details-page">
+      {/* Sezione immagine principale */}
       <div className="event-hero">
         <img
           src={event.image || "/default-event.jpg"}
@@ -135,6 +139,7 @@ export default function EventDetails() {
         </div>
       </div>
 
+      {/* Contenitore principale dettagli */}
       <div className="event-details-container">
         <div className="event-info-section">
           <h2>Dettagli evento</h2>
@@ -145,20 +150,21 @@ export default function EventDetails() {
           <p><strong>Creatore:</strong> {event.creatorName || "Sconosciuto"}</p>
         </div>
 
+        {/* Sezione pulsanti azione */}
         <div className="event-actions">
           {isCreator || user?.role === "admin" ? (
             <>
-              {/* 🔹 Riga Modifica / Elimina */}
+              {/* Pulsanti Modifica / Elimina */}
               <div className="edit-delete-row">
-                <button className="btn-update" onClick={handleUpdate}>
-                  ✏️ Modifica evento
+                <button className="btn-action btn-update" onClick={handleUpdate}>
+                  Modifica evento
                 </button>
-                <button className="btn-delete" onClick={handleDelete}>
-                  🗑️ Elimina evento
+                <button className="btn-action btn-delete" onClick={handleDelete}>
+                  Elimina evento
                 </button>
               </div>
 
-              {/* 🔹 Pulsante annulla iscrizione */}
+
               <button
                 className={`btn ${isRegistered ? "btn-cancel" : "btn-join"}`}
                 onClick={handleRegistration}
@@ -166,20 +172,20 @@ export default function EventDetails() {
                 {isRegistered ? "Annulla iscrizione" : "Iscriviti"}
               </button>
 
-              {/* 🔹 Testo Segnala evento */}
               <p className="report-text" onClick={openReportModal}>
                 Segnala evento
               </p>
             </>
           ) : (
             <>
-              {/* 🔹 Riquadro info creatore */}
-              <div className="creator-info">
-                Il creatore di questo evento è{" "}
-                <strong>{event.creatorName || "Sconosciuto"}</strong>
-              </div>
+             {/* Barra informativa per non-creatori */}
+            <div className="creator-info">
+              Solo il creatore di questo evento o un amministratore possono modificarlo o eliminarlo.
+              <br />
+              Evento creato da <strong>{event.creatorName || "Utente sconosciuto"}</strong>.
+            </div>
 
-              {/* 🔹 Pulsante iscrizione per altri utenti */}
+
               <button
                 className={`btn ${isRegistered ? "btn-cancel" : "btn-join"}`}
                 onClick={handleRegistration}
@@ -187,7 +193,6 @@ export default function EventDetails() {
                 {isRegistered ? "Annulla iscrizione" : "Iscriviti"}
               </button>
 
-              {/* 🔹 Testo Segnala evento */}
               <p className="report-text" onClick={openReportModal}>
                 Segnala evento
               </p>
@@ -195,16 +200,14 @@ export default function EventDetails() {
           )}
         </div>
 
-
-
-        {/* 💬 Chat live */}
+        {/* Sezione chat evento */}
         <div className="event-chat-section">
           <h2>Chat dell'evento</h2>
           <EventChat eventId={id} isRegistered={isRegistered} />
         </div>
       </div>
 
-      {/* 🚩 Modal Segnalazione Evento */}
+      {/* Modale segnalazione evento */}
       {showReportModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -233,10 +236,10 @@ export default function EventDetails() {
                   try {
                     setReporting(true);
                     await reportEvent(id, reportReason);
-                    toast.success("Evento segnalato agli amministratori ✅", { position: "top-center" });
+                    toast.success("Evento segnalato agli amministratori", { position: "top-center" });
                   } catch (err) {
                     console.error("Errore segnalazione evento:", err);
-                    toast.error("Errore nella segnalazione dell'evento ❌", { position: "top-center" });
+                    toast.error("Errore nella segnalazione dell'evento", { position: "top-center" });
                   } finally {
                     setReporting(false);
                     setShowReportModal(false);

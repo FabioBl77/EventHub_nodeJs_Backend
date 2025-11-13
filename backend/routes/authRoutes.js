@@ -200,6 +200,50 @@ router.get(
   }
 );
 
+/**
+ * @swagger
+ * /auth/github:
+ *   get:
+ *     summary: Login rapido con GitHub
+ *     tags: [Auth]
+ *     responses:
+ *       302:
+ *         description: Reindirizzamento a GitHub per login
+ */
+router.get(
+  '/github',
+  passport.authenticate('github', { scope: ['user:email'] })
+);
+
+/**
+ * @swagger
+ * /auth/github/callback:
+ *   get:
+ *     summary: Callback GitHub OAuth
+ *     tags: [Auth]
+ *     responses:
+ *       302:
+ *         description: Reindirizzamento al frontend con token JWT
+ */
+router.get(
+  '/github/callback',
+  passport.authenticate('github', { session: false, failureRedirect: `${process.env.FRONTEND_URL}/login?error=oauth` }),
+  (req, res) => {
+    try {
+      if (!req.user) return res.redirect(`${process.env.FRONTEND_URL}/login?error=no_user`);
+
+      const { generateToken } = require('../config/jwt');
+      const token = generateToken({ userId: req.user.id, role: req.user.role });
+
+      res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}`);
+    } catch (err) {
+      console.error('Errore callback OAuth GitHub:', err);
+      res.redirect(`${process.env.FRONTEND_URL}/login?error=server`);
+    }
+  }
+);
+
+
 // 🔹 Profilo utente loggato (richiede token JWT)
 router.get('/me', authMiddleware, authController.getMe);
 
