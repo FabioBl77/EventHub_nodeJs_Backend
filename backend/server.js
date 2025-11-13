@@ -4,6 +4,8 @@ const cors = require('cors');
 const http = require('http');
 const session = require('express-session');
 const passport = require('passport');
+const adminRoutes = require('./routes/adminRoutes');
+
 
 // 🔹 Import modelli e connessione Sequelize
 const { sequelize, User, Event, Registration } = require('./models');
@@ -58,7 +60,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/chats', chatRoutes);
 app.use('/api/notifications', notificationRoutes);
-
+app.use('/api/admin', adminRoutes);
 
 
 // 🔹 Swagger docs

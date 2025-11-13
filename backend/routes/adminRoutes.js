@@ -7,15 +7,15 @@ const {
   updateUserRole,
   toggleUserBlock,
   deleteUser
-} = require("../controllers/admin/adminUserController");
+} = require("../controllers/adminUserController");
 
 const {
   getAllEvents,
   blockEvent,
   deleteEventByAdmin
-} = require("../controllers/admin/adminEventController");
+} = require("../controllers/adminEventController");
 
-const { getAllReports } = require("../controllers/admin/adminReportController");
+const { getAllReports } = require("../controllers/adminReportController");
 
 const authMiddleware = require("../middlewares/authMiddleware");
 const roleMiddleware = require("../middlewares/roleMiddleware");

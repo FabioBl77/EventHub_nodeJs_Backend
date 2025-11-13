@@ -108,7 +108,16 @@ const login = async (req, res) => {
     const user = await User.findOne({ where: { email } });
     if (!user) return res.status(404).json({ message: 'Utente non trovato' });
 
-    if (!user.isVerified) return res.status(403).json({ message: 'Devi confermare la tua email prima di accedere' });
+    if (!user.isVerified) {
+      return res.status(403).json({ message: 'Devi confermare la tua email prima di accedere' });
+    }
+
+    // 🚫 BLOCCA LOGIN PER UTENTI BLOCCATI (FIX)
+    if (user.isBlocked) {
+      return res.status(403).json({
+        message: "Il tuo account è stato bloccato da un amministratore"
+      });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: 'Password errata' });
@@ -125,11 +134,13 @@ const login = async (req, res) => {
       },
       token
     });
+
   } catch (err) {
     console.error('Errore login:', err);
     res.status(500).json({ message: 'Errore durante il login' });
   }
 };
+
 
 /**
  * Logout utente (JWT lato client)

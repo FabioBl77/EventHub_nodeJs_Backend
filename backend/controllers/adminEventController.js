@@ -1,6 +1,6 @@
-const Event = require("../../models/Event");
-const User = require("../../models/User");
-const Registration = require("../../models/Registration");
+const Event = require("../models/Event");
+const User = require("../models/User");
+const Registration = require("../models/Registration");
 
 // Restituisce tutti gli eventi
 const getAllEvents = async (req, res) => {

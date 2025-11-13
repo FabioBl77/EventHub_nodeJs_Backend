@@ -1,6 +1,6 @@
-const Report = require("../../models/Report");
-const User = require("../../models/User");
-const Event = require("../../models/Event");
+const Report = require("../models/Report");
+const User = require("../models/User");
+const Event = require("../models/Event");
 
 // Restituisce tutte le segnalazioni
 const getAllReports = async (req, res) => {

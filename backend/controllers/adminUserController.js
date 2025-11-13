@@ -1,6 +1,6 @@
-const User = require("../../models/User");
-const Event = require("../../models/Event");
-const Registration = require("../../models/Registration");
+const User = require("../models/User");
+const Event = require("../models/Event");
+const Registration = require("../models/Registration");
 const { Op } = require("sequelize");
 
 // Lista utenti completa

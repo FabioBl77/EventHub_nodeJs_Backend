@@ -16,36 +16,42 @@ export default function Login() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+      const handleSubmit = async (e) => {
+      e.preventDefault();
+      setError("");
 
-    try {
-      const res = await api.post("/auth/login", form);
-      const { user, token } = res.data;
+      try {
+        const res = await api.post("/auth/login", form);
+        const { user, token } = res.data;
 
-      // salva token
-      localStorage.setItem("token", token);
+        // aggiorna contesto -> salva user + token
+        login(user, token);
 
-      // aggiorna contesto
-      login(user);
+        // redirect in base al ruolo
+        if (user.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/dashboard");
+        }
 
-      // redirect corretto in base al ruolo
-      if (user.role === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/dashboard");
+      } catch (err) {
+        console.error(err);
+
+        // ⛔ Utente bloccato (403)
+        if (err.response?.status === 403 && err.response.data?.message) {
+          setError(err.response.data.message); // mostra "Il tuo account è stato bloccato da un amministratore"
+          return;
+        }
+
+        // ⛔ Altri errori (email sbagliata ecc.)
+        if (err.response && err.response.data?.message) {
+          setError(err.response.data.message);
+        } else {
+          setError("Errore durante il login.");
+        }
       }
+    };
 
-    } catch (err) {
-      console.error(err);
-      if (err.response && err.response.data?.message) {
-        setError(err.response.data.message);
-      } else {
-        setError("Errore durante il login.");
-      }
-    }
-  };
 
   return (
     <div className="login-page">
