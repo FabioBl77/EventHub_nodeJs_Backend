@@ -7,7 +7,7 @@ import "../styles/Login.css";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext); // ✅ prendiamo la funzione login dal contesto
+  const { login } = useContext(AuthContext);
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
@@ -24,14 +24,19 @@ export default function Login() {
       const res = await api.post("/auth/login", form);
       const { user, token } = res.data;
 
-      // ✅ salva il token per le chiamate API
+      // salva token
       localStorage.setItem("token", token);
 
-      // ✅ aggiorna subito il contesto → Navbar si aggiorna senza refresh
+      // aggiorna contesto
       login(user);
 
-      // ✅ redirect alla dashboard
-      navigate("/dashboard");
+      // redirect corretto in base al ruolo
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
+
     } catch (err) {
       console.error(err);
       if (err.response && err.response.data?.message) {
@@ -76,14 +81,16 @@ export default function Login() {
           </button>
         </form>
 
-        {/* 🔹 Sezione Login rapido con OAuth */}
         <div className="oauth-section">
           <p className="oauth-title">Oppure accedi con</p>
+
           <div className="oauth-buttons">
             <button
               type="button"
               className="btn-oauth google"
-              onClick={() => (window.location.href = "http://localhost:3000/api/auth/google")}
+              onClick={() =>
+                (window.location.href = "http://localhost:3000/api/auth/google")
+              }
             >
               Accedi con Google
             </button>
@@ -91,7 +98,9 @@ export default function Login() {
             <button
               type="button"
               className="btn-oauth github"
-              onClick={() => (window.location.href = "http://localhost:3000/api/auth/github")}
+              onClick={() =>
+                (window.location.href = "http://localhost:3000/api/auth/github")
+              }
             >
               Accedi con GitHub
             </button>

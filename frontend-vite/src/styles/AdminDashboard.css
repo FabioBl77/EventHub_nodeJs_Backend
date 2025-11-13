@@ -1,0 +1,77 @@
+/* ============================================
+   ADMIN DASHBOARD - STILE GENERALE
+============================================ */
+
+.admin-dashboard {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: "Poppins", sans-serif;
+  color: #1f2937;
+}
+
+/* Titolo principale */
+.admin-title {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  color: #1e3a8a;
+  margin-bottom: 0.5rem;
+}
+
+/* Sottotitolo */
+.admin-welcome {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #374151;
+  margin-bottom: 2rem;
+}
+
+/* Sezioni principali */
+.admin-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Card */
+.admin-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.4rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid #1e3a8a;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-card h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 0.5rem;
+}
+
+.admin-card p {
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+/* Hover */
+.admin-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* ==============================
+   RESPONSIVE
+============================== */
+
+@media (max-width: 600px) {
+  .admin-title {
+    font-size: 1.6rem;
+  }
+
+  .admin-welcome {
+    font-size: 1rem;
+  }
+}

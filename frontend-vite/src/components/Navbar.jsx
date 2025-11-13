@@ -20,7 +20,6 @@ export default function Navbar() {
         <Link to="/">EventHub</Link>
       </div>
 
-      {/* 🔹 Bottone toggle menu mobile */}
       <button
         className="menu-toggle"
         onClick={() => setMenuOpen((prev) => !prev)}
@@ -38,10 +37,14 @@ export default function Navbar() {
         {user ? (
           <>
             <li>
-              <Link to="/dashboard" onClick={() => setMenuOpen(false)}>
-                Dashboard
+              <Link
+                to={user.role === "admin" ? "/admin" : "/dashboard"}
+                onClick={() => setMenuOpen(false)}
+              >
+                {user.role === "admin" ? "Admin Panel" : "Dashboard"}
               </Link>
             </li>
+
             <li>
               <button
                 onClick={() => {

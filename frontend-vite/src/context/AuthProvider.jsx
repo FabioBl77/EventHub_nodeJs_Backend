@@ -5,44 +5,56 @@ import { toast } from "react-toastify";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // ⬅️ AGGIUNTO
 
-  // ✅ All'avvio: controlla se esiste utente e token valido
+  // 🔹 Ricostruisce l'auth all'avvio
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    const token = localStorage.getItem("token");
+    const initializeAuth = () => {
+      const savedUser = localStorage.getItem("user");
+      const token = localStorage.getItem("token");
 
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
 
-        // Se scaduto → logout automatico
-        if (decoded.exp * 1000 < Date.now()) {
-          console.warn("Token scaduto, logout automatico.");
-          toast.warning("Sessione scaduta. Effettua di nuovo il login.", {
-            position: "top-center",
-          });
+          // Token scaduto → logout
+          if (decoded.exp * 1000 < Date.now()) {
+            console.warn("Token scaduto, logout automatico.");
+            toast.warning("Sessione scaduta. Effettua di nuovo il login.", {
+              position: "top-center",
+            });
+            handleLogout();
+            setLoading(false);
+            return;
+          }
+
+          // Token valido → ripristina utente
+          if (savedUser) {
+            setUser(JSON.parse(savedUser));
+          }
+        } catch (err) {
+          console.error("Token non valido:", err);
           handleLogout();
-          return;
         }
-
-        // Se valido → imposta utente
-        if (savedUser) setUser(JSON.parse(savedUser));
-      } catch (err) {
-        console.error("Token non valido:", err);
+      } else if (savedUser) {
+        // Incongruenza: user salvato ma niente token → pulizia
         handleLogout();
       }
-    } else if (savedUser) {
-      // Non c'è token, ma c'è user (incongruenza) → pulizia
-      handleLogout();
-    }
+
+      setLoading(false); // ⬅️ FONDAMENTALE
+    };
+
+    initializeAuth();
   }, []);
 
+  // 🔹 Login
   const handleLogin = (userData, token) => {
     if (token) localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(userData));
     setUser(userData);
   };
 
+  // 🔹 Logout
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
@@ -53,6 +65,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        loading,        // ⬅️ AGGIUNTO
         login: handleLogin,
         logout: handleLogout,
       }}
