@@ -4,7 +4,7 @@ import { getEventById, deleteEvent } from "../api/events";
 import { blockEventByAdmin } from "../api/admin";
 import EventChat from "../components/EventChat";
 import { toast } from "react-toastify";
-import "../styles/EventDetails.css";
+import "../styles/AdminEventChat.css";
 
 export default function AdminEventChat() {
   const { id } = useParams();
@@ -14,7 +14,6 @@ export default function AdminEventChat() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isBlocked, setIsBlocked] = useState(false);
-
 
   // Carica i dettagli evento
   useEffect(() => {
@@ -63,8 +62,9 @@ export default function AdminEventChat() {
     }
   };
 
-  // Modifica evento
-  const handleUpdate = () => navigate(`/update-event/${id}`);
+  // 🔥 USA LA PAGINA DI MODIFICA EVENTO PER ADMIN
+ const handleUpdate = () => navigate(`/admin/update-event/${id}`);
+
 
   if (loading) return <p className="loading">Caricamento evento...</p>;
   if (error) return <p className="error">{error}</p>;
@@ -118,7 +118,7 @@ export default function AdminEventChat() {
         {/* Chat live */}
         <div className="event-chat-section">
           <h2>Chat live evento</h2>
-          <EventChat eventId={id} isRegistered={true} />
+          <EventChat eventId={id} isRegistered={true} isBlocked={isBlocked} />
         </div>
       </div>
     </div>

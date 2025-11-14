@@ -8,6 +8,12 @@ export default function EventCard({ event, isRegistered, onToggleRegistration })
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
+  // Non mostrare eventi bloccati agli utenti
+  if (event.isBlocked) {
+    return null;
+  }
+
+
   const handleRegistration = async () => {
     try {
       const token = localStorage.getItem("token");

@@ -1,5 +1,6 @@
 // src/pages/AdminEvents.jsx
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   fetchAdminEvents,
   blockEventByAdmin,
@@ -11,6 +12,7 @@ import "../styles/AdminEvents.css";
 export default function AdminEvents() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Carica tutti gli eventi dall'API admin
   const loadEvents = async () => {
@@ -32,19 +34,34 @@ export default function AdminEvents() {
     loadEvents();
   }, []);
 
-  // Blocca / sblocca evento
-  const handleBlock = async (id) => {
-    try {
-      await blockEventByAdmin(id);
-      toast.info("Stato evento aggiornato", { position: "top-center" });
-      loadEvents();
-    } catch (e) {
-      console.error("Errore blocco/sblocco evento:", e);
-      toast.error("Errore nel blocco/sblocco evento", {
-        position: "top-center",
-      });
-    }
-  };
+// Blocca / sblocca evento (senza ricaricare tutta la lista)
+const handleBlock = async (id) => {
+  try {
+    // blockEventByAdmin ORA ritorna { id, isBlocked }
+    const updated = await blockEventByAdmin(id);
+
+    // aggiorna solo l’evento modificato
+    setEvents((prev) =>
+      prev.map((ev) =>
+        ev.id === updated.id ? { ...ev, isBlocked: updated.isBlocked } : ev
+      )
+    );
+
+    toast.info(
+      updated.isBlocked
+        ? "Evento bloccato"
+        : "Evento sbloccato",
+      { position: "top-center" }
+    );
+
+  } catch (e) {
+    console.error("Errore blocco/sblocco evento:", e);
+    toast.error("Errore nel blocco/sblocco evento", {
+      position: "top-center",
+    });
+  }
+};
+
 
   // Elimina evento
   const handleDelete = async (id) => {
@@ -123,12 +140,11 @@ export default function AdminEvents() {
 
                   <button
                     className="btn-chat"
-                    onClick={() =>
-                      alert("Da collegare alla chat live dell’evento.")
-                    }
+                    onClick={() => navigate(`/admin/event-chat/${event.id}`)}
                   >
                     Apri Chat
                   </button>
+
                 </div>
               </div>
             </div>

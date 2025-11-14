@@ -24,6 +24,8 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminEvents from "./pages/AdminEvents";
 import AdminReports from "./pages/AdminReports";
 import AdminEventChat from "./pages/AdminEventChat";
+import AdminUpdateEvent from "./pages/AdminUpdateEvent";
+
 
 
 export default function App() {
@@ -85,6 +87,15 @@ export default function App() {
             element={
               <AdminRoute>
                 <AdminEventChat />
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/update-event/:id"
+            element={
+              <AdminRoute>
+                <AdminUpdateEvent />
               </AdminRoute>
             }
           />

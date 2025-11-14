@@ -5,18 +5,23 @@ import "../styles/EventChat.css";
 
 const SOCKET_URL = "http://localhost:3000";
 
-export default function EventChat({ eventId, isRegistered }) {
+export default function EventChat({ eventId, isRegistered, isBlocked }) {
   const { user } = useContext(AuthContext);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [typingUser, setTypingUser] = useState("");
   const [toast, setToast] = useState("");
+
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
   const typingTimeout = useRef(null);
 
-  // Carica la cronologia messaggi
+  const isAdmin = user?.role === "admin";
+
+  // Carica cronologia messaggi
   useEffect(() => {
+    if (!isRegistered && !isAdmin) return;
+
     const loadChatHistory = async () => {
       try {
         const res = await fetch(`${SOCKET_URL}/api/events/${eventId}/chat`);
@@ -26,12 +31,13 @@ export default function EventChat({ eventId, isRegistered }) {
         console.error("Errore nel caricamento della chat:", err);
       }
     };
-    if (isRegistered) loadChatHistory();
-  }, [eventId, isRegistered]);
 
-  // Connessione Socket.IO
+    loadChatHistory();
+  }, [eventId, isRegistered, isAdmin]);
+
+  // Connessione socket
   useEffect(() => {
-    if (!isRegistered) return;
+    if (!isRegistered && !isAdmin) return;
 
     const socket = io(SOCKET_URL);
     socketRef.current = socket;
@@ -41,6 +47,7 @@ export default function EventChat({ eventId, isRegistered }) {
     socket.on("new_message", (msg) => {
       if (msg.eventId === Number(eventId) || msg.eventId === eventId) {
         setMessages((prev) => [...prev, msg]);
+
         if (
           msg.username === "Sistema" ||
           msg.userId === 0 ||
@@ -61,7 +68,7 @@ export default function EventChat({ eventId, isRegistered }) {
     return () => {
       socket.disconnect();
     };
-  }, [eventId, isRegistered]);
+  }, [eventId, isRegistered, isAdmin]);
 
   // Scroll automatico
   useEffect(() => {
@@ -105,6 +112,7 @@ export default function EventChat({ eventId, isRegistered }) {
   // Evento "sta scrivendo"
   const handleTyping = (e) => {
     setNewMessage(e.target.value);
+
     if (socketRef.current && user?.username) {
       socketRef.current.emit("typing", {
         eventId,
@@ -113,8 +121,16 @@ export default function EventChat({ eventId, isRegistered }) {
     }
   };
 
-  // Chat disabilitata
-  if (!isRegistered) {
+  // RENDER CONDIZIONALE — lo spostiamo QUI sotto dopo tutti gli hook
+  if (isBlocked && !isAdmin) {
+    return (
+      <div className="chat-disabled">
+        <p>La chat è disabilitata perché questo evento è stato bloccato dagli amministratori.</p>
+      </div>
+    );
+  }
+
+  if (!isRegistered && !isAdmin) {
     return (
       <div className="chat-disabled">
         <p>Solo gli iscritti all'evento possono partecipare alla chat.</p>
@@ -122,7 +138,7 @@ export default function EventChat({ eventId, isRegistered }) {
     );
   }
 
-  // Layout completo
+  // Layout chat
   return (
     <div className="chat-container">
       {toast && <div className="chat-toast">{toast}</div>}
@@ -135,17 +151,12 @@ export default function EventChat({ eventId, isRegistered }) {
             const isSystem =
               !msg.username ||
               msg.username === "Sistema" ||
-              msg.username === "null" ||
               msg.userId === 0 ||
               msg.userId === null ||
               msg.userId === undefined;
 
             if (isSystem) {
-              const text =
-                msg.message ||
-                msg.content ||
-                "Messaggio di sistema";
-
+              const text = msg.message || msg.content || "Messaggio di sistema";
               return (
                 <div key={index} className="chat-system-line">
                   {text}
@@ -157,9 +168,7 @@ export default function EventChat({ eventId, isRegistered }) {
 
             return (
               <div key={index} className={`chat-message ${isOwn ? "own" : "other"}`}>
-                <div className="chat-user">
-                  {msg.username || "Utente"}
-                </div>
+                <div className="chat-user">{msg.username || "Utente"}</div>
                 <div className="chat-text">{msg.message || msg.content}</div>
                 <div className="chat-time">
                   {new Date(msg.timestamp || msg.createdAt).toLocaleTimeString("it-IT", {
@@ -173,9 +182,7 @@ export default function EventChat({ eventId, isRegistered }) {
         )}
 
         {typingUser && (
-          <div className="typing-indicator">
-            {typingUser} sta scrivendo...
-          </div>
+          <div className="typing-indicator">{typingUser} sta scrivendo...</div>
         )}
 
         <div ref={messagesEndRef} />

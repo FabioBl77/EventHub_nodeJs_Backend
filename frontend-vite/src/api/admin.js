@@ -39,15 +39,27 @@ export const fetchAdminEvents = () => {
   return api.get("/admin/events");
 };
 
-// Blocca/sblocca un evento
-export const blockEventByAdmin = (id) => {
-  return api.put(`/admin/events/${id}/block`);
+// 🔥 Aggiorna un evento come admin
+export const updateEventByAdmin = (id, data) => {
+  return api.put(`/admin/events/${id}`, data);
+};
+
+// Blocca / sblocca evento
+export const blockEventByAdmin = async (id) => {
+  try {
+    const response = await api.put(`/admin/events/${id}/block`);
+    return response.data.event;
+  } catch (error) {
+    console.error("Errore blockEventByAdmin:", error);
+    throw error.response?.data || { message: "Errore blocco/sblocco evento" };
+  }
 };
 
 // Elimina evento
 export const deleteEventByAdmin = (id) => {
   return api.delete(`/admin/events/${id}`);
 };
+
 // ==============================
 //      GESTIONE SEGNALAZIONI
 // ==============================
@@ -56,8 +68,8 @@ export const deleteEventByAdmin = (id) => {
 export const fetchAdminReports = () => {
   return api.get("/admin/reports");
 };
-// Elimina una segnalazione
+
+// Elimina segnalazione
 export const deleteAdminReport = (id) => {
   return api.delete(`/admin/reports/${id}`);
 };
-

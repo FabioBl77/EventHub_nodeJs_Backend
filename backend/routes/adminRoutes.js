@@ -12,8 +12,10 @@ const {
 const {
   getAllEvents,
   blockEvent,
+  updateEventByAdmin,
   deleteEventByAdmin
 } = require("../controllers/adminEventController");
+
 
 const { getAllReports, deleteReportByAdmin } = require("../controllers/adminReportController");
 
@@ -226,6 +228,34 @@ router.put("/events/:id/block", blockEvent);
  *         description: Evento non trovato
  */
 router.delete("/events/:id", deleteEventByAdmin);
+
+/**
+ * @swagger
+ * /api/admin/events/{id}:
+ *   put:
+ *     summary: Aggiorna un evento come amministratore
+ *     tags: [Admin - Eventi]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *     responses:
+ *       200:
+ *         description: Evento aggiornato
+ *       404:
+ *         description: Evento non trovato
+ */
+router.put("/events/:id", updateEventByAdmin);
 
 
 /*

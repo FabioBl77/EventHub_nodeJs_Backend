@@ -2,23 +2,12 @@ const Event = require("../models/Event");
 const User = require("../models/User");
 const Registration = require("../models/Registration");
 
-// Restituisce tutti gli eventi
+/* =====================================================
+   LISTA COMPLETA EVENTI
+===================================================== */
 const getAllEvents = async (req, res) => {
   try {
     const events = await Event.findAll({
-      attributes: [
-      "id",
-      "title",
-      "description",
-      "location",
-      "category",
-      "date",
-      "capacity",
-      "image",     
-      "isBlocked",
-      "createdAt"
-    ],
-
       include: [
         {
           model: User,
@@ -34,21 +23,20 @@ const getAllEvents = async (req, res) => {
       order: [["createdAt", "DESC"]]
     });
 
-    const formatted = events.map(event => ({
-    id: event.id,
-    title: event.title,
-    description: event.description,
-    location: event.location,
-    category: event.category,
-    date: event.date,
-    capacity: event.capacity,
-    image: event.image,                
-    isBlocked: event.isBlocked,
-    createdAt: event.createdAt,
-    creator: event.creator,
-    registrationCount: event.registrations ? event.registrations.length : 0
+    const formatted = events.map(ev => ({
+      id: ev.id,
+      title: ev.title,
+      description: ev.description,
+      location: ev.location,
+      category: ev.category,
+      date: ev.date,
+      capacity: ev.capacity,
+      image: ev.image,
+      isBlocked: ev.isBlocked,
+      createdAt: ev.createdAt,
+      creator: ev.creator,
+      registrationCount: ev.registrations?.length || 0
     }));
-
 
     res.status(200).json(formatted);
   } catch (err) {
@@ -57,43 +45,89 @@ const getAllEvents = async (req, res) => {
   }
 };
 
-// Blocca o sblocca un evento
+/* =====================================================
+   GET EVENTO SINGOLO (ADMIN)
+===================================================== */
+const getAdminEventById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const event = await Event.findByPk(id, {
+      include: [{ model: User, as: "creator", attributes: ["id", "username"] }]
+    });
+
+    if (!event) {
+      return res.status(404).json({ message: "Evento non trovato" });
+    }
+
+    res.status(200).json(event);
+  } catch (err) {
+    console.error("Errore getAdminEventById:", err);
+    res.status(500).json({ message: "Errore nel recupero evento" });
+  }
+};
+
+/* =====================================================
+   AGGIORNAMENTO EVENTO (ADMIN)
+===================================================== */
+const updateEventByAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    const event = await Event.findByPk(id);
+    if (!event) {
+      return res.status(404).json({ message: "Evento non trovato" });
+    }
+
+    await event.update(updates);
+
+    res.status(200).json({
+      message: "Evento aggiornato correttamente",
+      event,
+    });
+  } catch (err) {
+    console.error("Errore updateEventByAdmin:", err);
+    res.status(500).json({ message: "Errore durante l'aggiornamento evento" });
+  }
+};
+
+/* =====================================================
+   BLOCCA / SBLOCCA EVENTO
+===================================================== */
 const blockEvent = async (req, res) => {
   try {
     const { id } = req.params;
 
     const event = await Event.findByPk(id);
-    if (!event) {
-      return res.status(404).json({ message: "Evento non trovato" });
-    }
+    if (!event) return res.status(404).json({ message: "Evento non trovato" });
 
-    event.isBlocked = !event.isBlocked;
-    await event.save();
+    const newStatus = !event.isBlocked;
+    await event.update({ isBlocked: newStatus });
 
     res.status(200).json({
-      message: event.isBlocked
+      message: newStatus
         ? "Evento bloccato correttamente"
-        : "Evento sbloccato correttamente"
+        : "Evento sbloccato correttamente",
+      isBlocked: newStatus,
     });
   } catch (err) {
     console.error("Errore blockEvent:", err);
-    res.status(500).json({ message: "Errore nel blocco evento" });
+    res.status(500).json({ message: "Errore nel blocco/sblocco evento" });
   }
 };
 
-// Eliminazione evento da parte dell'admin
+/* =====================================================
+   ELIMINA EVENTO (ADMIN)
+===================================================== */
 const deleteEventByAdmin = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const event = await Event.findByPk(id);
-    if (!event) {
-      return res.status(404).json({ message: "Evento non trovato" });
-    }
+    await Registration.destroy({ where: { eventId: id } });
 
-    await Registration.destroy({
-      where: { eventId: id }
-    });
+    const event = await Event.findByPk(id);
+    if (!event) return res.status(404).json({ message: "Evento non trovato" });
 
     await event.destroy();
 
@@ -106,6 +140,8 @@ const deleteEventByAdmin = async (req, res) => {
 
 module.exports = {
   getAllEvents,
+  getAdminEventById,
+  updateEventByAdmin,
   blockEvent,
   deleteEventByAdmin
 };

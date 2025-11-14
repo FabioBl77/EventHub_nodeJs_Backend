@@ -45,7 +45,7 @@ export default function AdminDashboard() {
           style={{ cursor: "pointer" }}
         >
           <h2>Segnalazioni</h2>
-          <p>Controlla gli eventi segnalati dagli utenti.</p>
+          <p>Controlla tutti gli eventi segnalati dagli utenti.</p>
         </div>
       </div>
     </div>

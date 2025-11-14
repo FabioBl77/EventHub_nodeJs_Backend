@@ -3,11 +3,14 @@ import { useEffect, useState } from "react";
 import { fetchAdminReports, deleteAdminReport } from "../api/admin";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
+import { useNavigate } from "react-router-dom";
 import "../styles/AdminReports.css";
 
 export default function AdminReports() {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
 
   // Carica tutte le segnalazioni
   const loadReports = async () => {
@@ -92,11 +95,12 @@ export default function AdminReports() {
                 </p>
               </div>
 
+
               <div className="report-actions">
                 <button
                   className="btn-chat"
                   onClick={() =>
-                    toast.info("Chat live segnalazione — prossimamente!")
+                    navigate(`/admin/event-chat/${report.event?.id}`)
                   }
                 >
                   Apri Chat Live
