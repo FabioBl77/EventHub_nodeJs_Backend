@@ -29,3 +29,22 @@ export const toggleUserBlock = (id) => {
 export const deleteUserByAdmin = (id) => {
   return api.delete(`/admin/users/${id}`);
 };
+
+// ==============================
+//      GESTIONE EVENTI ADMIN
+// ==============================
+
+// Ottieni tutti gli eventi
+export const fetchAdminEvents = () => {
+  return api.get("/admin/events");
+};
+
+// Blocca/sblocca un evento
+export const blockEventByAdmin = (id) => {
+  return api.put(`/admin/events/${id}/block`);
+};
+
+// Elimina evento
+export const deleteEventByAdmin = (id) => {
+  return api.delete(`/admin/events/${id}`);
+};

@@ -7,16 +7,18 @@ const getAllEvents = async (req, res) => {
   try {
     const events = await Event.findAll({
       attributes: [
-        "id",
-        "title",
-        "description",
-        "location",
-        "category",
-        "date",
-        "capacity",
-        "isBlocked",
-        "createdAt"
-      ],
+      "id",
+      "title",
+      "description",
+      "location",
+      "category",
+      "date",
+      "capacity",
+      "image",     
+      "isBlocked",
+      "createdAt"
+    ],
+
       include: [
         {
           model: User,
@@ -33,18 +35,20 @@ const getAllEvents = async (req, res) => {
     });
 
     const formatted = events.map(event => ({
-      id: event.id,
-      title: event.title,
-      description: event.description,
-      location: event.location,
-      category: event.category,
-      date: event.date,
-      capacity: event.capacity,
-      isBlocked: event.isBlocked,
-      createdAt: event.createdAt,
-      creator: event.creator,
-      registrationCount: event.registrations ? event.registrations.length : 0
+    id: event.id,
+    title: event.title,
+    description: event.description,
+    location: event.location,
+    category: event.category,
+    date: event.date,
+    capacity: event.capacity,
+    image: event.image,                
+    isBlocked: event.isBlocked,
+    createdAt: event.createdAt,
+    creator: event.creator,
+    registrationCount: event.registrations ? event.registrations.length : 0
     }));
+
 
     res.status(200).json(formatted);
   } catch (err) {
