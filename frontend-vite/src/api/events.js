@@ -30,7 +30,10 @@ export const registerToEvent = (id) => api.post(`/events/${id}/register`);
 export const cancelRegistration = (id) => api.delete(`/events/${id}/cancel`);
 
 // Segnala un evento
-export const reportEvent = (id, reason) => api.post(`/events/${id}/report`, { reason });
+export const reportEvent = (id, reason) => {
+  return api.post("/reports", { eventId: id, reason });
+};
+
 
 // Filtra eventi pubblici per categoria, data o luogo
 export const filterEvents = (filters) => api.get("/events/filter", { params: filters });

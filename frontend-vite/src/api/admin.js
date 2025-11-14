@@ -48,3 +48,16 @@ export const blockEventByAdmin = (id) => {
 export const deleteEventByAdmin = (id) => {
   return api.delete(`/admin/events/${id}`);
 };
+// ==============================
+//      GESTIONE SEGNALAZIONI
+// ==============================
+
+// Ottiene tutte le segnalazioni
+export const fetchAdminReports = () => {
+  return api.get("/admin/reports");
+};
+// Elimina una segnalazione
+export const deleteAdminReport = (id) => {
+  return api.delete(`/admin/reports/${id}`);
+};
+

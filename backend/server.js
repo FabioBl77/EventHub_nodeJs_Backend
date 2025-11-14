@@ -7,6 +7,7 @@ const passport = require('passport');
 const adminRoutes = require('./routes/adminRoutes');
 
 
+
 // 🔹 Import modelli e connessione Sequelize
 const { sequelize, User, Event, Registration } = require('./models');
 
@@ -22,6 +23,7 @@ const userRoutes = require('./routes/userRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const reportRoutes = require("./routes/reportRoutes");
 
 // Socket.io
 const { initSocket } = require('./utils/socket');
@@ -62,7 +64,7 @@ app.use('/api/chats', chatRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
 app.use("/uploads", express.static("uploads"));
-
+app.use("/api/reports", reportRoutes);
 
 
 // 🔹 Swagger docs

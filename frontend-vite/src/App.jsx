@@ -23,6 +23,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
 import AdminEvents from "./pages/AdminEvents";
 import AdminReports from "./pages/AdminReports";
+import AdminEventChat from "./pages/AdminEventChat";
+
 
 export default function App() {
   return (
@@ -77,6 +79,16 @@ export default function App() {
               </AdminRoute>
             }
           />
+
+          <Route
+            path="/admin/event-chat/:id"
+            element={
+              <AdminRoute>
+                <AdminEventChat />
+              </AdminRoute>
+            }
+          />
+
 
           <Route
             path="/admin/reports"

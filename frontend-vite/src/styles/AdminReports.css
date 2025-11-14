@@ -1,0 +1,149 @@
+/* ====== PAGINA PRINCIPALE ====== */
+.admin-reports-page {
+  padding: 30px;
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
+.admin-reports-title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 25px;
+  color: #222;
+}
+
+/* ====== GRIGLIA ====== */
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
+
+/* ====== CARD ====== */
+.report-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  transition: 0.2s;
+  border-left: 6px solid #3498db;
+}
+
+.report-card:hover {
+  transform: translateY(-3px);
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.report-header h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+/* ====== BADGE STATO EVENTO ====== */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.status-badge.green {
+  background: #2ecc71;
+}
+
+.status-badge.red {
+  background: #e74c3c;
+}
+
+/* ====== MOTIVO SEGNALAZIONE ====== */
+.report-reason {
+  font-size: 15px;
+  margin: 10px 0;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* ====== META (utente + data) ====== */
+.report-meta {
+  font-size: 14px;
+  color: #555;
+  margin-top: 10px;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+/* ====== AZIONI ====== */
+.report-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+/* Pulsanti uniformi */
+.report-actions button {
+  flex: 1;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.report-actions button:hover {
+  transform: translateY(-1px);
+}
+
+/* Pulsante chat */
+.btn-chat {
+  background: #3b82f6;
+}
+
+.btn-chat:hover {
+  background: #2563eb;
+}
+
+/* Pulsante elimina */
+.btn-delete {
+  background: #dc2626;
+}
+
+.btn-delete:hover {
+  background: #b91c1c;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 768px) {
+  .reports-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .report-card {
+    padding: 16px;
+  }
+
+  .admin-reports-title {
+    font-size: 26px;
+  }
+
+  .report-actions {
+    flex-direction: column;
+  }
+
+  .report-actions button {
+    width: 100%;
+  }
+}

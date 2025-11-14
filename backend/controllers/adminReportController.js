@@ -49,6 +49,35 @@ const getAllReports = async (req, res) => {
   }
 };
 
-module.exports = {
-  getAllReports
+// 🔹 Elimina una segnalazione
+const deleteReportByAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("✅ Richiesta di eliminazione segnalazione ricevuta. ID:", id);
+
+    const report = await Report.findByPk(id);
+
+    if (!report) {
+      console.warn("⚠️ Segnalazione non trovata con ID:", id);
+      return res.status(404).json({ message: "Segnalazione non trovata" });
+    }
+
+    await report.destroy();
+    console.log("🗑️ Segnalazione eliminata:", id);
+
+    res.status(200).json({ message: "Segnalazione eliminata correttamente" });
+  } catch (err) {
+    console.error("❌ Errore deleteReportByAdmin:", err);
+    res
+      .status(500)
+      .json({ message: "Errore durante l'eliminazione della segnalazione" });
+  }
 };
+
+
+
+module.exports = {
+  getAllReports,
+  deleteReportByAdmin
+};
+

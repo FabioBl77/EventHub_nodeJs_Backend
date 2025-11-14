@@ -15,7 +15,8 @@ const {
   deleteEventByAdmin
 } = require("../controllers/adminEventController");
 
-const { getAllReports } = require("../controllers/adminReportController");
+const { getAllReports, deleteReportByAdmin } = require("../controllers/adminReportController");
+
 
 const authMiddleware = require("../middlewares/authMiddleware");
 const roleMiddleware = require("../middlewares/roleMiddleware");
@@ -253,5 +254,28 @@ router.delete("/events/:id", deleteEventByAdmin);
  *         description: Lista segnalazioni
  */
 router.get("/reports", getAllReports);
+
+/**
+ * @swagger
+ * /api/admin/reports/{id}:
+ *   delete:
+ *     summary: Elimina una segnalazione
+ *     tags: [Admin - Segnalazioni]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Segnalazione eliminata correttamente
+ *       404:
+ *         description: Segnalazione non trovata
+ */
+router.delete("/reports/:id", deleteReportByAdmin);
+
 
 module.exports = router;
