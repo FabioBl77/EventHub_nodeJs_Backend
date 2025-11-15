@@ -3,10 +3,21 @@
   padding: 30px;
 }
 
+/* ================================
+   🌟 TITOLO ELEGANTE - UTENTI
+================================ */
 .admin-users-title {
-  font-size: 32px;
-  font-weight: bold;
-  margin-bottom: 25px;
+  font-size: 2.3rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 30px;
+
+  background: linear-gradient(135deg, #2563eb, #3b82f6); /* Blu premium */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow: 0px 3px 8px rgba(37, 99, 235, 0.25);
+  letter-spacing: 1px;
 }
 
 /* ==== Table Wrapper ==== */
@@ -80,7 +91,7 @@
 }
 
 .badge-role.admin {
-  background: #dc2626;
+  background: #c1e425;
   color: white;
 }
 
@@ -130,7 +141,7 @@
   background: #3b82f6;
 }
 .btn.warning {
-  background: #d97706;
+  background: #4b5563;
 }
 .btn.danger {
   background: #dc2626;
@@ -158,12 +169,12 @@
   }
 
   .actions {
-    flex-direction: column; /* 🔥 pulsanti uno sotto l'altro */
+    flex-direction: column; 
     gap: 6px;
   }
 
   .btn {
-    width: 100%; /* 🔥 pulsanti larghi e leggibili */
+    width: 100%; 
     text-align: center;
   }
 

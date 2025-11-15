@@ -17,8 +17,14 @@ export default function CreateEvent() {
   });
   const [loading, setLoading] = useState(false);
 
+  const [imgError, setImgError] = useState(false);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+
+    if (e.target.name === "image") {
+      setImgError(false); // reset errore anteprima
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -27,9 +33,7 @@ export default function CreateEvent() {
 
     try {
       await api.post("/events", form);
-      toast.success("Evento creato con successo! 🎉", {
-        position: "top-center",
-      });
+      toast.success("Evento creato con successo! 🎉", { position: "top-center" });
       navigate("/dashboard");
     } catch (err) {
       console.error("Errore creazione evento:", err);
@@ -46,6 +50,22 @@ export default function CreateEvent() {
     <div className="create-event-page">
       <div className="create-event-card">
         <h1>Crea un nuovo evento</h1>
+
+        {/* 🔥 PREVIEW IMMAGINE */}
+        <div className="image-preview-container">
+          {form.image && !imgError ? (
+            <img
+              src={form.image}
+              alt="Anteprima evento"
+              className="image-preview"
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <div className="image-placeholder">
+              Nessuna anteprima disponibile
+            </div>
+          )}
+        </div>
 
         <form onSubmit={handleSubmit}>
           <label>Titolo</label>
@@ -64,6 +84,8 @@ export default function CreateEvent() {
             placeholder="Descrizione evento"
             value={form.description}
             onChange={handleChange}
+            rows="6"
+            className="textarea-large"
             required
           />
 

@@ -105,9 +105,9 @@ const handleSubmit = async (e) => {
             required
           />
 
-          <label>Data e Ora</label>
+          <label>Data</label>
           <input
-            type="datetime-local"
+            type="date"
             name="date"
             value={formData.date}
             onChange={handleChange}

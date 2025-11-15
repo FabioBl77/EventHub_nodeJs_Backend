@@ -1,56 +1,54 @@
-/* ==============================
+/* ===========================================
    🏠 HOME PAGE - EVENTHUB
-============================== */
+=========================================== */
 .home-page {
   padding: 30px;
   max-width: 1200px;
   margin: 0 auto;
   font-family: "Poppins", sans-serif;
   color: #1f2937;
+  animation: fadeIn 0.4s ease;
 }
 
-/* ==============================
+/* ===========================================
    🎯 TITOLO PRINCIPALE
-============================== */
+=========================================== */
 .home-title {
   text-align: center;
-  margin-bottom: 30px;
-  color: #1e3a8a;
-  font-size: 2.3rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  margin-bottom: 35px;
+  font-size: 2.6rem;
+  font-weight: 800;
   background: linear-gradient(135deg, #2563eb, #3b82f6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  letter-spacing: 0.7px;
 }
 
-/* ==============================
+/* ===========================================
    🎠 CAROSELLO MODERNO
-============================== */
+=========================================== */
 .carousel {
   position: relative;
   width: 100%;
-  height: clamp(500px, 55vh, 550px);
+  height: clamp(380px, 55vh, 520px);
   overflow: hidden;
-  border-radius: 14px;
-  margin-bottom: 40px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  background-color: #f3f4f6;
+  border-radius: 16px;
+  margin-bottom: 45px;
+  background: #f3f4f6;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.15);
 }
 
 .carousel-item {
   position: absolute;
-  top: 0;
-  left: 100%;
+  inset: 0;
   width: 100%;
   height: 100%;
   opacity: 0;
-  transform: scale(1.05);
-  transition: all 0.9s ease-in-out;
+  transform: scale(1.04);
+  transition: opacity 0.9s ease, transform 0.9s ease;
 }
 
 .carousel-item.active {
-  left: 0;
   opacity: 1;
   transform: scale(1);
 }
@@ -59,196 +57,213 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
-  border-radius: 14px;
 }
 
+/* Testo sul carosello */
 .carousel-caption {
   position: absolute;
   bottom: 0;
   width: 100%;
-  padding: 0.8rem 1rem;
-  background: rgba(0, 0, 0, 0.6);
-  color: #fff;
+  padding: 1rem;
   text-align: center;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+  color: #fff;
   font-weight: 600;
-  font-size: 1.1rem;
-  letter-spacing: 0.3px;
-  border-bottom-left-radius: 14px;
-  border-bottom-right-radius: 14px;
+  font-size: 1.25rem;
 }
 
-/* --- Responsive carosello --- */
+/* Responsive carosello */
 @media (max-width: 768px) {
   .carousel {
-    height: clamp(220px, 50vh, 380px);
+    height: clamp(200px, 45vh, 360px);
   }
+
   .carousel-caption {
-    font-size: 0.9rem;
-    padding: 6px;
+    font-size: 1rem;
   }
 }
 
-/* ==============================
-   Paragrafo descrittivo
-============================== */
+/* ===========================================
+   📘 SEZIONE INTRO
+=========================================== */
 .home-intro {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  padding: 2rem;
-  margin: 3rem auto;
-  max-width: 850px;
+  background: white;
+  border-radius: 14px;
+  padding: 2.3rem;
+  max-width: 900px;
+  margin: 3.5rem auto;
   text-align: center;
   color: #374151;
-  line-height: 1.7;
+  line-height: 1.8;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .home-intro:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
 }
 
 .home-intro h2 {
-  font-size: 2rem;
-  color: #1e3a8a;
+  font-size: 2.1rem;
   margin-bottom: 1rem;
+  color: #1e3a8a;
   font-weight: 700;
 }
 
 .home-intro p {
-  font-size: 1rem;
   margin-bottom: 1rem;
 }
 
 .home-intro strong {
-  color: #1e3a8a;
+  color: #2563eb;
 }
 
-
-
-/* ==============================
+/* ===========================================
    🔍 SEZIONE FILTRI
-============================== */
+=========================================== */
 .filters {
-  background: #f9fafb;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 1.8rem;
+  margin-bottom: 2.5rem;
   border: 1px solid #dbeafe;
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
 }
 
 .filters h2 {
   text-align: center;
   color: #1e3a8a;
-  font-size: 1.3rem;
   font-weight: 700;
-  margin-bottom: 1rem;
-}
-
-.filters input {
-  padding: 0.8rem;
-  border-radius: 8px;
-  border: 1px solid #cbd5e1;
-  font-size: 1rem;
-  transition: all 0.2s ease;
-  width: 100%;
-}
-
-.filters input:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+  margin-bottom: 1.3rem;
 }
 
 .filters-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1.2rem;
 }
 
-/* ==============================
+/* Input */
+.filters input {
+  padding: 0.8rem;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.filters input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 6px rgba(59, 130, 246, 0.35);
+}
+
+/* ===========================================
    📋 LISTA EVENTI
-============================== */
+=========================================== */
 .event-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.8rem;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+ 
   justify-items: center;
 }
 
-/* CARD EVENTO */
+/* CARD EVENTO MIGLIORATA */
 .event-card {
   background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
   width: 100%;
-  max-width: 320px;
+  max-width: 340px;
   display: flex;
   flex-direction: column;
-  transition: all 0.3s ease;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  transition: all 0.25s ease;
 }
 
 .event-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-  border-color: #3b82f6;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
-.event-card img {
+.event-image-wrapper {
+  position: relative;
   width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-bottom: 1px solid #e5e7eb;
+  height: 250px;
+  overflow: hidden;
 }
 
-.event-card h3 {
-  margin: 12px 12px 6px 12px;
-  color: #1e3a8a;
-  font-size: 1.1rem;
+.event-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.event-card:hover .event-image-wrapper img {
+  transform: scale(1.05);
+}
+
+/* Tag categoria */
+.event-category-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #2563eb;
+  color: white;
+  font-size: 0.75rem;
+  padding: 5px 9px;
+  border-radius: 6px;
   font-weight: 600;
 }
 
-.event-card p {
-  margin: 0 12px 10px 12px;
+/* INFO DELLA CARD */
+.event-info {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;               
+}
+
+.event-info h3 {
+  margin: 0;             
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.event-date-location {
+  margin: 0;               
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+.event-description {
+  margin: 4px 0 0 0;       
   color: #4b5563;
   font-size: 0.9rem;
-  line-height: 1.4;
+  line-height: 1.35;
 }
 
-/* Nessun evento */
-.no-events {
-  text-align: center;
-  font-size: 1rem;
-  color: #6b7280;
-  margin-top: 1rem;
-}
-
-/* ==============================
+/* ===========================================
    RESPONSIVE
-============================== */
+=========================================== */
 @media (max-width: 600px) {
   .home-title {
-    font-size: 1.7rem;
+    font-size: 1.9rem;
   }
 
-  .filters {
-    padding: 1rem;
+  .home-intro {
+    padding: 1.6rem;
   }
 
-  .filters-container {
-    grid-template-columns: 1fr;
+  .event-image-wrapper {
+    height: 150px;
   }
+}
 
-  .event-card img {
-    height: 140px;
-  }
-
-  .event-card h3 {
-    font-size: 1rem;
-  }
+/* Fade-in pagina */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }

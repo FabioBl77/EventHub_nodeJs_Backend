@@ -1,21 +1,65 @@
 /* ================================
-   PAGINA EVENTI ADMIN
+   🛠️ PAGINA EVENTI ADMIN
 ================================ */
 .admin-events-page {
   padding: 30px;
   max-width: 1200px;
   margin: auto;
+  font-family: "Poppins", sans-serif;
 }
 
+/* ================================
+   🌟 TITOLO ELEGANTE
+================================ */
 .admin-events-title {
-  font-size: 32px;
-  font-weight: bold;
-  margin-bottom: 25px;
+  font-size: 2.3rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 30px;
+
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow: 0px 3px 8px rgba(37, 99, 235, 0.25);
+  letter-spacing: 1px;
 }
 
 
 /* ================================
-   GRID UNIFORME
+   🔍 FILTRI ADMIN
+================================ */
+.admin-filters {
+  background: #f9fafb;
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  border: 1px solid #e0e7ff;
+  margin-bottom: 30px;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+.admin-filters input {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.admin-filters input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 6px rgba(59, 130, 246, 0.35);
+}
+
+
+/* ================================
+   GRID UNIFORME EVENTI
 ================================ */
 .events-grid {
   display: grid;
@@ -25,7 +69,7 @@
 
 
 /* ================================
-   CARD EVENTO
+   🧩 CARD EVENTO ADMIN
 ================================ */
 .event-card {
   display: flex;
@@ -34,9 +78,14 @@
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0,0,0,0.07);
-  transition: 0.2s ease;
+  transition: 0.25s ease;
   border: 1px solid #e6e6e6;
   min-height: 420px;
+}
+
+.event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.12);
 }
 
 .event-card.blocked {
@@ -44,13 +93,9 @@
   opacity: 0.85;
 }
 
-.event-card:hover {
-  transform: translateY(-4px);
-}
-
 
 /* ================================
-   AREA IMMAGINE
+   🖼️ AREA IMMAGINE
 ================================ */
 .event-image {
   width: 100%;
@@ -67,7 +112,7 @@
 
 
 /* ================================
-   INFO EVENTO
+   📄 INFO EVENTO
 ================================ */
 .event-info {
   flex: 1;
@@ -78,20 +123,21 @@
 }
 
 .event-info h3 {
-  font-size: 20px;
+  font-size: 1.2rem;
   font-weight: 700;
+  color: #1e3a8a;
   margin-bottom: 5px;
 }
 
 .event-info p {
-  margin: 3px 0;
+  margin: 4px 0;
   color: #555;
-  font-size: 14px;
+  font-size: 0.9rem;
 }
 
 
 /* ================================
-   BADGE STATO
+   🔘 BADGE STATO
 ================================ */
 .status-badge {
   padding: 6px 14px;
@@ -113,7 +159,7 @@
 
 
 /* ================================
-   AZIONI CARD
+   🔧 BOTTONI DI AZIONE
 ================================ */
 .event-actions {
   display: flex;
@@ -130,7 +176,7 @@
   color: #fff;
   cursor: pointer;
   font-size: 14px;
-  transition: 0.2s;
+  transition: 0.25s ease;
 }
 
 .btn-action {
@@ -147,4 +193,28 @@
 
 .event-actions button:hover {
   opacity: 0.85;
+  transform: translateY(-2px);
+}
+
+
+
+/* ================================
+   📱 RESPONSIVE
+================================ */
+@media (max-width: 600px) {
+  .admin-events-title {
+    font-size: 1.8rem;
+  }
+
+  .admin-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .event-card {
+    min-height: 370px;
+  }
+
+  .event-info h3 {
+    font-size: 1.05rem;
+  }
 }

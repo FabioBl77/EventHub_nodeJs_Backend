@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { registerToEvent, cancelRegistration } from "../api/events";
-import { toast } from "react-toastify"; // 🔹 import toastify
+import { toast } from "react-toastify";
 import "../styles/EventCard.css";
 
 export default function EventCard({ event, isRegistered, onToggleRegistration }) {
@@ -9,10 +9,7 @@ export default function EventCard({ event, isRegistered, onToggleRegistration })
   const [loading, setLoading] = useState(false);
 
   // Non mostrare eventi bloccati agli utenti
-  if (event.isBlocked) {
-    return null;
-  }
-
+  if (event.isBlocked) return null;
 
   const handleRegistration = async () => {
     try {
@@ -28,14 +25,12 @@ export default function EventCard({ event, isRegistered, onToggleRegistration })
       setLoading(true);
 
       if (isRegistered) {
-        // 🔹 Annulla iscrizione
         await cancelRegistration(event.id);
         toast.info(`Hai annullato l'iscrizione all'evento "${event.title}"`, {
           position: "top-center",
         });
         onToggleRegistration && onToggleRegistration(event.id, false);
       } else {
-        // 🔹 Nuova iscrizione
         await registerToEvent(event.id);
         toast.success(`Ti sei iscritto all'evento "${event.title}"!`, {
           position: "top-center",
@@ -43,13 +38,12 @@ export default function EventCard({ event, isRegistered, onToggleRegistration })
         onToggleRegistration && onToggleRegistration(event.id, true);
       }
     } catch (error) {
-      console.error("Errore durante l'iscrizione/annullamento:", error);
-      const msg =
+      console.error("Errore iscrizione:", error);
+      toast.error(
         error.response?.data?.message ||
-        error.message ||
-        "Si è verificato un errore, riprova più tardi.";
-
-      toast.error(msg, { position: "top-center" });
+          "Errore durante l'operazione. Riprova.",
+        { position: "top-center" }
+      );
     } finally {
       setLoading(false);
     }
@@ -57,11 +51,18 @@ export default function EventCard({ event, isRegistered, onToggleRegistration })
 
   return (
     <div className="event-card">
-      <img
-        src={event.image || "/default-event.jpg"}
-        alt={event.title}
-        className="event-image"
-      />
+      
+      {/* 🔥 Wrapper immagine + categoria */}
+      <div className="event-image-wrapper">
+        <img
+          src={event.image || "/default-event.jpg"}
+          alt={event.title}
+          className="event-image"
+        />
+
+        {/* 🔥 Tag categoria sopra l’immagine */}
+        <span className="event-category-tag">{event.category}</span>
+      </div>
 
       <div className="event-info">
         <h3>{event.title}</h3>
@@ -75,10 +76,12 @@ export default function EventCard({ event, isRegistered, onToggleRegistration })
         </p>
         <p>
           <strong>Data:</strong>{" "}
-          {event.date ? new Date(event.date).toLocaleDateString("it-IT") : "N/D"}
+          {event.date
+            ? new Date(event.date).toLocaleDateString("it-IT")
+            : "N/D"}
         </p>
 
-        {/* 🔹 Bottone dinamico */}
+        {/* Bottoni */}
         <button
           className={`action-btn ${isRegistered ? "btn-cancel" : "btn-join"}`}
           onClick={handleRegistration}
@@ -91,7 +94,6 @@ export default function EventCard({ event, isRegistered, onToggleRegistration })
             : "Iscriviti"}
         </button>
 
-        {/* 🔹 Link ai dettagli evento */}
         <Link to={`/event/${event.id}`} className="details-btn">
           Dettagli
         </Link>

@@ -1,52 +1,151 @@
+/* ============================
+   CARD EVENTO
+============================ */
 .event-card {
   display: flex;
   flex-direction: column;
   border: 1px solid #ddd;
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
   margin: 1rem;
   background-color: #fff;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.event-image {
+.event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 14px rgba(0,0,0,0.15);
+}
+
+/* ============================
+   IMMAGINE + CATEGORIA
+============================ */
+.event-image-wrapper {
+  position: relative;
   width: 100%;
   height: 200px;
-  object-fit: cover;
+  overflow: hidden;
 }
 
+.event-image-wrapper img,
+.event-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.event-card:hover .event-image-wrapper img {
+  transform: scale(1.05);
+}
+
+/* Categoria sopra l'immagine */
+.event-category-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #2563eb;
+  color: white;
+  font-size: 0.75rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+}
+
+/* ============================
+   INFO
+============================ */
 .event-info {
   padding: 1rem;
 }
 
-.event-actions {
+.event-info h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.event-info p {
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+  color: #4b5563;
+  line-height: 1.4;
+  font-size: 0.95rem;
+}
+
+/* ============================
+   AZIONI
+============================ */
+.event-actions,
+.action-btn-wrapper {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 1rem;
 }
 
-.btn {
-  padding: 0.5rem 1rem;
+.btn,
+.action-btn,
+.details-btn {
+  display: inline-block;
+  padding: 0.55rem 1rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
   color: white;
-  font-weight: bold;
-  transition: background 0.3s;
+  font-weight: 600;
+  text-align: center;
+  transition: background 0.3s ease;
 }
 
-.btn.register { background-color: #9dcae9; }
-.btn.register:hover { background-color: #7985b0; }
+/* Iscrizione */
+.btn.register,
+.action-btn.btn-join {
+  background-color: #9dcae9;
+}
+.btn.register:hover,
+.action-btn.btn-join:hover {
+  background-color: #7985b0;
+}
 
-.btn.cancel { background-color: #ffc107; color: #212529; }
-.btn.cancel:hover { background-color: #e0a800; }
+/* Annulla iscrizione */
+.btn.cancel,
+.action-btn.btn-cancel {
+  background-color: #bababa;
+  color: #212529;
+}
+.btn.cancel:hover,
+.action-btn.btn-cancel:hover {
+  background-color: #5e5e5e;
+}
 
-.btn.edit { background-color: #007bff; }
-.btn.edit:hover { background-color: #0069d9; }
+/* Modifica */
+.btn.edit {
+  background-color: #007bff;
+}
+.btn.edit:hover {
+  background-color: #0069d9;
+}
 
-.btn.delete { background-color: #dc3545; }
-.btn.delete:hover { background-color: #b02a37; }
+/* Elimina */
+.btn.delete {
+  background-color: #dc3545;
+}
+.btn.delete:hover {
+  background-color: #b02a37;
+}
 
-.btn.details { background-color: #6c757d; }
-.btn.details:hover { background-color: #363a3c; }
+/* Dettagli */
+.btn.details,
+.details-btn {
+  background-color: #6c757d;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn.details:hover,
+.details-btn:hover {
+  background-color: #363a3c;
+}
