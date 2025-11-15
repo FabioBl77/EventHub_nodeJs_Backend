@@ -30,7 +30,7 @@ require('./config/passport');
 
 const app = express();
 
-/* =========================================
+/* ==========================================
    CORS multi-ambiente (locale + produzione)
 ========================================= */
 app.use(
