@@ -11,47 +11,46 @@ export default function Login() {
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // 👁️ toggle visibilità
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-      const handleSubmit = async (e) => {
-      e.preventDefault();
-      setError("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
 
-      try {
-        const res = await api.post("/auth/login", form);
-        const { user, token } = res.data;
+    try {
+      const res = await api.post("/auth/login", form);
+      const { user, token } = res.data;
 
-        // aggiorna contesto -> salva user + token
-        login(user, token);
+      // aggiorna contesto -> salva user + token
+      login(user, token);
 
-        // redirect in base al ruolo
-        if (user.role === "admin") {
-          navigate("/admin");
-        } else {
-          navigate("/dashboard");
-        }
-
-      } catch (err) {
-        console.error(err);
-
-        // ⛔ Utente bloccato (403)
-        if (err.response?.status === 403 && err.response.data?.message) {
-          setError(err.response.data.message); // mostra "Il tuo account è stato bloccato da un amministratore"
-          return;
-        }
-
-        // ⛔ Altri errori (email sbagliata ecc.)
-        if (err.response && err.response.data?.message) {
-          setError(err.response.data.message);
-        } else {
-          setError("Errore durante il login.");
-        }
+      // redirect in base al ruolo
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
       }
-    };
+    } catch (err) {
+      console.error(err);
 
+      // ⛔ Utente bloccato (403)
+      if (err.response?.status === 403 && err.response.data?.message) {
+        setError(err.response.data.message);
+        return;
+      }
+
+      // ⛔ Altri errori (email sbagliata ecc.)
+      if (err.response && err.response.data?.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Errore durante il login.");
+      }
+    }
+  };
 
   return (
     <div className="login-page">
@@ -73,14 +72,22 @@ export default function Login() {
           />
 
           <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            placeholder="••••••••"
-            value={form.password}
-            onChange={handleChange}
-            required
-          />
+          <div className="password-wrapper">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="••••••••"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
+            <span
+              className="toggle-password"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </span>
+          </div>
 
           <button type="submit" className="btn">
             Accedi
@@ -95,7 +102,8 @@ export default function Login() {
               type="button"
               className="btn-oauth google"
               onClick={() =>
-                (window.location.href = "http://localhost:3000/api/auth/google")
+                (window.location.href =
+                  "http://localhost:3000/api/auth/google")
               }
             >
               Accedi con Google
@@ -105,7 +113,8 @@ export default function Login() {
               type="button"
               className="btn-oauth github"
               onClick={() =>
-                (window.location.href = "http://localhost:3000/api/auth/github")
+                (window.location.href =
+                  "http://localhost:3000/api/auth/github")
               }
             >
               Accedi con GitHub

@@ -21,7 +21,7 @@ passport.use(
           user = await User.create({
             username: profile.displayName,
             email,
-            password: Math.random().toString(36).slice(-8), // password random
+            password: Math.random().toString(36).slice(-8), 
             role: 'user',
             isBlocked: false,
             provider: 'google',

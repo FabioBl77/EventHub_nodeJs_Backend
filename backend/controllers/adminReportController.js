@@ -10,12 +10,12 @@ const getAllReports = async (req, res) => {
       include: [
         {
           model: User,
-          as: "reporter", // alias corretto
+          as: "reporter", 
           attributes: ["id", "username", "email", "role"]
         },
         {
           model: Event,
-          as: "reportedEvent", // alias corretto
+          as: "reportedEvent", 
           attributes: [
             "id",
             "title",
