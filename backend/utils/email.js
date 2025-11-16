@@ -1,5 +1,5 @@
-const nodemailer = require('nodemailer');
-require('dotenv').config();
+const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
@@ -11,14 +11,9 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-transporter.verify((error) => {
-  if (error) {
-    console.error("Errore connessione SMTP:", error);
-  } else {
-    console.log("Server SMTP pronto per inviare email");
-  }
-});
-
+/**
+ * Invia una email
+ */
 const sendEmail = async ({ to, subject, text, html }) => {
   try {
     const mailOptions = {
