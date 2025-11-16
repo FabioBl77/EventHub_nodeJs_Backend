@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const decoded = jwtDecode(token);
 
-        // Token scaduto → logout
+        // Token scaduto logout
         if (decoded.exp * 1000 < Date.now()) {
           console.warn("Token scaduto.");
           toast.warning("Sessione scaduta. Effettua di nuovo il login.");
