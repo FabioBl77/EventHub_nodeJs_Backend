@@ -3,7 +3,15 @@ import { io } from "socket.io-client";
 import { AuthContext } from "../context/AuthContext";
 import "../styles/EventChat.css";
 
-const SOCKET_URL = "http://localhost:3000";
+const SOCKET_URL =
+  import.meta.env.VITE_SOCKET_URL ||
+  (import.meta.env.VITE_API_URL
+    ? import.meta.env.VITE_API_URL.replace(/\/api\/?$/, "")
+    : "http://localhost:3000");
+
+const CHAT_API_BASE =
+  import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+
 
 export default function EventChat({ eventId, isRegistered, isBlocked }) {
   const { user } = useContext(AuthContext);

@@ -103,7 +103,7 @@ export default function Login() {
               className="btn-oauth google"
               onClick={() =>
                 (window.location.href =
-                  "http://localhost:3000/api/auth/google")
+                  "https://eventhub-nodejs.onrender.com/api/auth/google")
               }
             >
               Accedi con Google
@@ -114,7 +114,7 @@ export default function Login() {
               className="btn-oauth github"
               onClick={() =>
                 (window.location.href =
-                  "http://localhost:3000/api/auth/github")
+                  "https://eventhub-nodejs.onrender.com/api/auth/github")
               }
             >
               Accedi con GitHub

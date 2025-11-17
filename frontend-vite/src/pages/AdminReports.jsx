@@ -6,6 +6,12 @@ import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import "../styles/AdminReports.css";
 
+const SOCKET_URL =
+  import.meta.env.VITE_SOCKET_URL ||
+  (import.meta.env.VITE_API_URL
+    ? import.meta.env.VITE_API_URL.replace(/\/api\/?$/, "")
+    : "http://localhost:3000");
+
 export default function AdminReports() {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,9 +49,8 @@ export default function AdminReports() {
   useEffect(() => {
     loadReports();
 
-    const socket = io("http://localhost:3000", {
-      transports: ["websocket"],
-    });
+    const socket = io(SOCKET_URL, { transports: ["websocket"] });
+
 
     socket.on("report_created", (newReport) => {
       toast.info(`Nuova segnalazione da ${newReport.user.username}`);
