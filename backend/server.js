@@ -87,8 +87,10 @@ app.set('io', io);
 /* =========================================
    Avvio server
 ========================================= */
+const isProd = process.env.NODE_ENV === "production";
+
 sequelize
-  .sync({ alter: true })
+  .sync(isProd ? {} : { alter: true }) 
   .then(() => {
     console.log('Database connesso e sincronizzato correttamente');
     const PORT = process.env.PORT || 3000;
