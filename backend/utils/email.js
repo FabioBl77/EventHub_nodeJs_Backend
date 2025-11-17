@@ -1,37 +1,28 @@
-const nodemailer = require('nodemailer');
-require('dotenv').config();
+// backend/utils/email.js
+const sgMail = require("@sendgrid/mail");
+require("dotenv").config();
 
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: Number(process.env.EMAIL_PORT),
-  secure: process.env.EMAIL_SECURE === "true",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD
-  }
-});
+if (!process.env.SENDGRID_API_KEY) {
+  throw new Error("SENDGRID_API_KEY non impostata");
+}
 
-transporter.verify((error) => {
-  if (error) {
-    console.error("Errore connessione SMTP:", error);
-  } else {
-    console.log("Server SMTP pronto per inviare email");
-  }
-});
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+const DEFAULT_FROM =
+  process.env.SENDGRID_FROM ||
+  process.env.EMAIL_FROM ||
+  "no-reply@eventhub.com";
 
 const sendEmail = async ({ to, subject, text, html }) => {
   try {
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
+    await sgMail.send({
       to,
+      from: DEFAULT_FROM,
       subject,
       text,
-      html: html || text
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email inviata:", info.messageId);
-    return info;
+      html: html || text,
+    });
+    console.log(`Email inviata a ${to}`);
   } catch (error) {
     console.error("Errore invio email:", error);
     throw new Error("Impossibile inviare l'email");

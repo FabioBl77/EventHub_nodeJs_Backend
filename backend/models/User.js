@@ -64,7 +64,7 @@ User.init(
   {
     sequelize,
     modelName: 'User',
-    tableName: 'Users', // 👈 importante: corrisponde alla tabella esistente
+    tableName: 'Users', 
     timestamps: true,
     hooks: {
       beforeCreate: async (user) => {
